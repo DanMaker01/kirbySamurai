@@ -15,10 +15,10 @@ class Gerenciador_Atores:
         if ator:
             self.atores[nome] = ator
 
-    def update(self, clock):
+    def update(self, dt):
         """Atualiza todos os atores gerenciados."""
         for ator in self.atores.values():
-            ator.update(clock)
+            ator.update(dt)
 
     def draw(self, screen):
 
