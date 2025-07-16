@@ -23,6 +23,7 @@
 ###########################################
 # from config import EV_ABRIR_DIALOGO, EV_
 import pygame
+from gerenciador_tela import GerenciadorTela
 ##########################################################################
 class Evento:
     def __init__(self, duracao_ms, callback=None):
@@ -54,7 +55,7 @@ class EventoEspera(Evento):
 ##########################################################################
 
 class EventoFade(Evento):
-    def __init__(self, tipo, duracao_ms, tela: 'GerenciadorTela', callback=None):
+    def __init__(self, tipo, duracao_ms, tela: GerenciadorTela, callback=None):
         super().__init__(duracao_ms, callback)
         self.tipo = tipo
         self.tela = tela

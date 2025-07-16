@@ -49,7 +49,10 @@ class Gerenciador:
         self.gerenciador_eventos.adicionar_espera(1000)
         self.gerenciador_eventos.adicionar_espera(1000)
         self.gerenciador_eventos.adicionar_fade_out(2000)
-        self.gerenciador_eventos.adicionar_fade_in(2000)
+        self.gerenciador_eventos.adicionar_fade_in(200)
+        self.gerenciador_eventos.adicionar_fade_out(200)
+        self.gerenciador_eventos.adicionar_fade_in(200)
+        self.gerenciador_eventos.adicionar_fade_out(200)
 
     def _criar_atores(self):
         triangulo_sup = Ator(animacoes={"padrao": Animacao(["triangulo_sup.png"])})

@@ -20,6 +20,7 @@ class GerenciadorEventos:
         self.gerenciador_tela = gerenciador_tela
         self.evento_atual = None
 
+    # ------------------------------------------------------------
     def adicionar_fade_in(self, duracao_ms, callback=None):
         self.adicionar_evento(EventoFade("in", duracao_ms, self.gerenciador_tela, callback))
 
@@ -32,6 +33,7 @@ class GerenciadorEventos:
 
     def adicionar_espera(self, duracao_ms, callback=None):
         self.adicionar_evento(EventoEspera(duracao_ms, callback))
+    # ------------------------------------------------------------
 
     def atualizar(self, tempo_atual):
         if not self.evento_atual and self.eventos:

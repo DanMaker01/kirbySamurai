@@ -47,3 +47,29 @@ class GerenciadorTela:
 
     def esta_em_fade(self):
         return self.fade_em_andamento
+    
+     # --- MÉTODOS DE CONTROLE DA CÂMERA ---
+
+    # def set_posicao_camera(self, x, y):
+    #     """Define posição da câmera diretamente."""
+    #     self.camera.set_posicao(x, y)
+
+    def mover_camera_para(self, x, y):
+        """Define posição objetivo para a câmera se mover suavemente."""
+        self.camera.mover_para(x, y)
+
+    def set_velocidade_camera(self, vel_x, vel_y):
+        """Define velocidade de movimento da câmera."""
+        self.camera.set_velocidade(vel_x, vel_y)
+
+    def centralizar_camera_em(self, x, y):
+        """Centraliza a câmera em uma posição (x, y)."""
+        self.camera.centralizar_em(x, y)
+
+    # def aplicar_camera(self, rect):
+    #     """Aplica o deslocamento da câmera em um rect (para desenhar)."""
+    #     return self.camera.aplicar(rect)
+
+    # def aplicar_camera_pos(self, pos):
+    #     """Aplica o deslocamento da câmera em uma posição (x, y)."""
+    #     return self.camera.aplicar_pos(pos)

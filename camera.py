@@ -1,3 +1,5 @@
+import pygame
+
 class Camera:
     def __init__(self, largura_mundo, altura_mundo, largura_tela, altura_tela):
         self.largura_mundo = largura_mundo
