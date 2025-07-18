@@ -49,24 +49,38 @@ class Gerenciador:
 
     def _setup_eventos(self):
         # self.gerenciador_eventos.adicionar_camera_move(1,10,0)
-        self.gerenciador_eventos.adicionar_fade_in(2000)
-        # self.gerenciador_eventos.adicionar_fade_in(1000)
-        # self.gerenciador_eventos
-        # self.gerenciador_eventos.adicionar_camera_move(1000,100,0)
-        # self.gerenciador_eventos.adicionar_camera_move(1000,0,0)
-        # self.gerenciador_eventos.adicionar_camera_move(1000,-100,0)
-        # self.gerenciador_eventos.adicionar_camera_move(1000,0,0)
-        # self.gerenciador_eventos.adicionar_espera(1000)
-        self.gerenciador_eventos.adicionar_espera(1000)
-        self.gerenciador_eventos.adicionar_ator_move(1000,) <<<<<<<<<<<<<<<<<<<<<<???????
-        # self.gerenciador_eventos.adicionar_fade_out(500)
+        # self.gerenciador_eventos.adicionar_fade_in(2000)
+        # self.gerenciador_eventos.adicionar_espera(1)
+        self.gerenciador_eventos.adicionar_fade_in(3000)
+        self.gerenciador_eventos.adicionar_espera(3000)
+        self.gerenciador_eventos.adicionar_espera(3000)
+        self.gerenciador_eventos.adicionar_espera(3000)
+        # self.gerenciador_eventos.adicionar_espera(3000)
+        # self.gerenciador_eventos.adicionar_espera(1)
+        # # self.gerenciador_eventos.adicionar_espera(5000)
+        # # self.gerenciador_eventos.adicionar_camera_move(1000,100,0)
+        self.gerenciador_eventos.adicionar_ator_move(2000,'t1',-360,0) 
+        self.gerenciador_eventos.adicionar_ator_move(2000,'t2',360,0) 
+        self.gerenciador_eventos.adicionar_espera(2000)
+        self.gerenciador_eventos.adicionar_espera(2000)
+        self.gerenciador_eventos.adicionar_ator_move(4000,'t1',360,0) 
+        self.gerenciador_eventos.adicionar_espera(2000)
+        self.gerenciador_eventos.adicionar_ator_move(4000,'t2',-360,0) 
+        self.gerenciador_eventos.adicionar_espera(2000)
+        self.gerenciador_eventos.adicionar_espera(2000)
+        self.gerenciador_eventos.adicionar_ator_move(2000,'t1',0,0) 
+        self.gerenciador_eventos.adicionar_ator_move(2000,'t2',0,0) 
+        self.gerenciador_eventos.adicionar_espera(2000)
+        self.gerenciador_eventos.adicionar_espera(2000)
+        
+        self.gerenciador_eventos.adicionar_fade_out(2000)
 
     def _criar_atores(self):
         triangulo_sup = Ator(animacoes={"padrao": Animacao(["triangulo_sup.png"])})
         triangulo_inf = Ator(animacoes={"padrao": Animacao(["triangulo_inf.png"])})
 
-        self.gerenciador_atores.adicionar_ator("triangulo_sup", triangulo_sup)
-        self.gerenciador_atores.adicionar_ator("triangulo_inf", triangulo_inf)
+        self.gerenciador_atores.adicionar_ator("t1", triangulo_sup)
+        self.gerenciador_atores.adicionar_ator("t2", triangulo_inf)
 
     def update(self, dt):
         self.tempo_atual = pygame.time.get_ticks()
@@ -84,7 +98,7 @@ class Gerenciador:
         # self.gerenciador_eventos.desenhar(self.screen) #atualmente não faz nada, retirar???
         self.gerenciador_tela.desenhar(self.screen)
         self.placar.draw(self.screen)
-        print("self.camera.pos::\t", self.camera.pos_x, self.camera.pos_y, " -> ",self.camera.objetivo_x, self.camera.objetivo_y)
+        # print("self.camera.pos::\t", self.camera.pos_x, self.camera.pos_y, " -> ",self.camera.objetivo_x, self.camera.objetivo_y)
 
     def input(self, acao):
         print(f"[ {acao} ]")

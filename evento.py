@@ -54,14 +54,48 @@ class EventoEspera(Evento):
 
 ##########################################################################
 from gerenciador_atores import Gerenciador_Atores
+from ator import Ator
 class EventoMoverAtor(Evento):
-    def __init__(self, duracao_ms,gerenciador_atores:Gerenciador_Atores, callback=None):
+    def __init__(self, duracao_ms, gerenciador_atores, nome_ator, destino_x, destino_y, callback=None):
         super().__init__(duracao_ms, callback)
-        self.gerenciador_atores = gerenciador_atores
-    
+        self.gerenciador_atores :Gerenciador_Atores= gerenciador_atores
+        self.nome_ator = nome_ator
+        self.destino_x = destino_x
+        self.destino_y = destino_y
+        self.inicio_x = None
+        self.inicio_y = None
+
+    def iniciar(self, tempo_atual):
+        super().iniciar(tempo_atual)
+        ator:Ator = self.gerenciador_atores.pegar_ator(self.nome_ator)
+        if ator == None:
+            print('não achou o ator:',self.nome_ator)
+            return
+        # ator.fisica.set_vel()
+        self.inicio_x, self.inicio_y = ator.fisica.posicao
+
+        dx = self.destino_x - self.inicio_x
+        dy = self.destino_y - self.inicio_y
+        duracao_seg = self.duracao / 1000.0  # ms → s
+
+        vel_x = dx / duracao_seg
+        vel_y = dy / duracao_seg
+
+        ator.fisica.set_vel(vel_x, vel_y)
+
     def atualizar(self, tempo_atual):
-        # return super().atualizar(tempo_atual)
-        pass
+        if self.concluido:
+            return
+        if tempo_atual - self.inicio >= self.duracao:
+            ator = self.gerenciador_atores.pegar_ator(self.nome_ator)
+            # print(ator)
+            ator.fisica.set_vel(0.0, 0.0)
+            ator.set_posicao(self.destino_x, self.destino_y)  # Corrige qualquer imprecisão
+            self.concluido = True
+            if self.callback:
+                self.callback()
+
+#####################################################################################
 
 class EventoFade(Evento):
     def __init__(self, tipo, duracao_ms, tela: GerenciadorTela, callback=None):
@@ -120,7 +154,7 @@ class EventoMoverCamera(Evento):
         # self.camera.set_posicao(nova_x, nova_y)
         self.camera.mover_para(nova_x, nova_y)
         
-        print(f"self.camera.pos: ",self.camera.pos_x,self.camera.pos_y )
+        # print(f"self.camera.pos: ",self.camera.pos_x,self.camera.pos_y )
         
         if proporcao >= 1.0:
             self.concluido = True

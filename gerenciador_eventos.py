@@ -23,8 +23,8 @@ class GerenciadorEventos:
         self.gerenciador_tela = gerenciador_tela
         self.gerenciador_atores = gerenciador_atores
         self.camera = camera
-        # Referência do evento sendo executado agora 
-        self.evento_atual: Evento = None
+        # Lista dos eventos sendo executados agora 
+        self.eventos_ativos: list[Evento] = []
 
     def _adicionar_evento(self, evento):
         self.fila_eventos.append(evento)
@@ -39,31 +39,54 @@ class GerenciadorEventos:
     def adicionar_camera_move(self, duracao_ms, x,y, callback=None ):
         self._adicionar_evento(EventoMoverCamera(duracao_ms, self.camera, x,y, callback))
         
-    def adicionar_ator_move(self, duracao_ms, x=0,y=0,vel_x=0, vel_y=0, callback=None):
-        self._adicionar_evento( EventoMoverAtor(duracao_ms,,self.gerenciador_atores, callback) )
+    def adicionar_ator_move(self, duracao_ms,nome, destino_x=0,destino_y=0,callback=None):
+        self._adicionar_evento( EventoMoverAtor(duracao_ms,self.gerenciador_atores,nome,destino_x,destino_y, callback) )
 
     def adicionar_espera(self, duracao_ms, callback=None):
         self._adicionar_evento(EventoEspera(duracao_ms, callback))
     # ------------------------------------------------------------
 
     def atualizar(self, tempo_atual):
-        if not self.evento_atual and self.fila_eventos:
-            self.evento_atual = self.fila_eventos.pop(0)
-            self.evento_atual.iniciar(tempo_atual)
+        # Atualiza todos os eventos ativos (inclusive esperas)
+        for evento in self.eventos_ativos[:]:
+            evento.atualizar(tempo_atual)
+            if evento.concluido:
+                print(evento, "finalizado em ",tempo_atual)
+                if evento.callback:
+                    evento.callback()
+                self.eventos_ativos.remove(evento)
 
-        if self.evento_atual:
-            self.evento_atual.atualizar(tempo_atual)
-            if self.evento_atual.concluido:
-                if self.evento_atual.callback:
-                    self.evento_atual.callback()
-                self.evento_atual = None
+        # Verifica se há algum EventoEspera ainda ativo
+        espera_ativa = any(isinstance(e, EventoEspera) for e in self.eventos_ativos)
+
+        # Enquanto houver eventos na fila...
+        while self.fila_eventos:
+            proximo = self.fila_eventos[0]
+
+            # Se é uma espera, só iniciamos se não houver outra ativa
+            if isinstance(proximo, EventoEspera):
+                if espera_ativa:
+                    break  # Espera ativa: não inicia outra
+                else:
+                    evento = self.fila_eventos.pop(0)
+                    evento.iniciar(tempo_atual)
+                    self.eventos_ativos.append(evento)
+                    break  # Espera recém-iniciada: aguarda ela terminar
+            else:
+                # Inicia outros eventos imediatamente
+                evento = self.fila_eventos.pop(0)
+                evento.iniciar(tempo_atual)
+                self.eventos_ativos.append(evento)
+
+
 
     def desenhar(self, tela):
         '''
         Atualmente não está fazendo nada. Retirar??????
         '''
-        if self.evento_atual:
-            self.evento_atual.desenhar(tela)
+        # if self.evento_atual:
+        #     self.evento_atual.desenhar(tela)
+        pass
 
     def eventos_ativos(self):
-        return self.evento_atual is not None or bool(self.fila_eventos)
+        return bool(self.fila_eventos) or bool(self.eventos_ativos)

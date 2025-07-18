@@ -28,3 +28,7 @@ class Gerenciador_Atores:
             # correção para offset
             ator.draw(screen, offset) 
         pass
+
+    def pegar_ator(self, nome):
+        """Retorna o ator com o nome especificado, ou None se não existir."""
+        return self.atores.get(nome)
