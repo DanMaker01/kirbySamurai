@@ -48,17 +48,11 @@ class Gerenciador:
         self._setup_eventos()
 
     def _setup_eventos(self):
-        # self.gerenciador_eventos.adicionar_camera_move(1,10,0)
-        # self.gerenciador_eventos.adicionar_fade_in(2000)
         # self.gerenciador_eventos.adicionar_espera(1)
         self.gerenciador_eventos.adicionar_fade_in(3000)
         self.gerenciador_eventos.adicionar_espera(3000)
-        self.gerenciador_eventos.adicionar_espera(3000)
-        self.gerenciador_eventos.adicionar_espera(3000)
         # self.gerenciador_eventos.adicionar_espera(3000)
-        # self.gerenciador_eventos.adicionar_espera(1)
-        # # self.gerenciador_eventos.adicionar_espera(5000)
-        # # self.gerenciador_eventos.adicionar_camera_move(1000,100,0)
+        self.gerenciador_eventos.adicionar_espera(3000)
         self.gerenciador_eventos.adicionar_ator_move(2000,'t1',-360,0) 
         self.gerenciador_eventos.adicionar_ator_move(2000,'t2',360,0) 
         self.gerenciador_eventos.adicionar_espera(2000)

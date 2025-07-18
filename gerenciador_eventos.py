@@ -62,19 +62,20 @@ class GerenciadorEventos:
         # Enquanto houver eventos na fila...
         while self.fila_eventos:
             proximo = self.fila_eventos[0]
-
+            evento:Evento
             # Se é uma espera, só iniciamos se não houver outra ativa
             if isinstance(proximo, EventoEspera):
                 if espera_ativa:
                     break  # Espera ativa: não inicia outra
                 else:
+                    
                     evento = self.fila_eventos.pop(0)
                     evento.iniciar(tempo_atual)
                     self.eventos_ativos.append(evento)
                     break  # Espera recém-iniciada: aguarda ela terminar
             else:
                 # Inicia outros eventos imediatamente
-                evento = self.fila_eventos.pop(0)
+                evento =self.fila_eventos.pop(0)
                 evento.iniciar(tempo_atual)
                 self.eventos_ativos.append(evento)
 
