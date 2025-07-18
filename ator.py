@@ -1,3 +1,9 @@
+##############################################################################
+# A Fazer:
+# - Melhorar o sistema de posicao, ser um único, com get e set. 
+# - Pro draw é importante o anima.pos, pro resto é importante o fisica.pos
+##############################################################################
+
 from animacao import Animacao
 
 # --------------------------------------------------------------------
@@ -24,13 +30,16 @@ class Ator:
         #pensar nessa ordem (??????????????????)
         self.animacoes.update(dt)
         self.fisica.processar(dt)
-        self.animacoes.set_pos(*self.fisica.posicao) #corrigir posicao nas animções
+        self.animacoes.set_pos(*self.fisica.posicao) #a física vem primeiro, corrigir posicao nas animções
 
     def draw(self, screen, offset=(0,0)):
         if not self.ativa:
             return
         self.animacoes.draw(screen, tintura=self.tintura, offset=offset)
     
+    def set_posicao(self,x,y):
+        self.animacoes.pos=(x,y)
+        self.fisica.posicao=(x,y)
 
 # --------------------------------------------------------------------
 # ????? implementar:
@@ -115,6 +124,9 @@ class FisicaAtor:
             x = self.posicao[0] + self.vel[0] * dt
             y = self.posicao[1] + self.vel[1] * dt
             self.posicao = (x, y)
+
+    def set_vel(self, vel_x, vel_y):
+        self.vel = (vel_x, vel_y)
 
 
 # --------------------------------------------------------------------

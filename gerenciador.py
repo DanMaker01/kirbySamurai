@@ -25,6 +25,7 @@ from ator import Ator
 from animacao import Animacao
 import pygame
 from evento import *
+from camera import Camera
 
 class Gerenciador:
     def __init__(self, screen, clock):
@@ -34,25 +35,31 @@ class Gerenciador:
         self.controle_travado = False
 
         # Subsistemas
-        self.placar = Placar()
         self.persistencia_placar = Persistencia()
+        self.placar = Placar()
         self.gerenciador_atores = Gerenciador_Atores()
-        self.gerenciador_som = Gerenciador_Som()
-        self.gerenciador_tela = GerenciadorTela(largura_mundo=1600, altura_mundo=1200)
-        self.gerenciador_eventos = GerenciadorEventos(self.gerenciador_tela)
+        self.gerenciador_som    = Gerenciador_Som()
+        self.gerenciador_tela   = GerenciadorTela()
+        self.camera             = Camera(largura_tela=WIDTH, altura_tela=HEIGHT)
+        self.gerenciador_eventos= GerenciadorEventos(self.gerenciador_tela, self.gerenciador_atores,self.camera)
+        # Preparar cena e roteiro
 
         self._criar_atores()
         self._setup_eventos()
 
     def _setup_eventos(self):
+        # self.gerenciador_eventos.adicionar_camera_move(1,10,0)
         self.gerenciador_eventos.adicionar_fade_in(2000)
+        # self.gerenciador_eventos.adicionar_fade_in(1000)
+        # self.gerenciador_eventos
+        # self.gerenciador_eventos.adicionar_camera_move(1000,100,0)
+        # self.gerenciador_eventos.adicionar_camera_move(1000,0,0)
+        # self.gerenciador_eventos.adicionar_camera_move(1000,-100,0)
+        # self.gerenciador_eventos.adicionar_camera_move(1000,0,0)
+        # self.gerenciador_eventos.adicionar_espera(1000)
         self.gerenciador_eventos.adicionar_espera(1000)
-        self.gerenciador_eventos.adicionar_espera(1000)
-        self.gerenciador_eventos.adicionar_fade_out(2000)
-        self.gerenciador_eventos.adicionar_fade_in(200)
-        self.gerenciador_eventos.adicionar_fade_out(200)
-        self.gerenciador_eventos.adicionar_fade_in(200)
-        self.gerenciador_eventos.adicionar_fade_out(200)
+        self.gerenciador_eventos.adicionar_ator_move(1000,) <<<<<<<<<<<<<<<<<<<<<<???????
+        # self.gerenciador_eventos.adicionar_fade_out(500)
 
     def _criar_atores(self):
         triangulo_sup = Ator(animacoes={"padrao": Animacao(["triangulo_sup.png"])})
@@ -66,12 +73,18 @@ class Gerenciador:
         self.gerenciador_eventos.atualizar(self.tempo_atual)
         self.gerenciador_tela.atualizar(self.tempo_atual, dt)
         self.gerenciador_atores.update(dt)
+        self.camera.atualizar(dt)
 
     def draw(self):
-        self.gerenciador_atores.draw(self.screen)
-        self.placar.draw(self.screen)
-        self.gerenciador_eventos.desenhar(self.screen)
+        self.screen.fill((0, 0, 0))  # Preenche a tela com preto (vazio)
+
+        # atualizar aqui???? sim
+        # cada classe vai agir dependendo da camera?
+        self.gerenciador_atores.draw(self.screen, (-self.camera.pos_x, -self.camera.pos_y)) # deve receber uma defasagem pela câmera
+        # self.gerenciador_eventos.desenhar(self.screen) #atualmente não faz nada, retirar???
         self.gerenciador_tela.desenhar(self.screen)
+        self.placar.draw(self.screen)
+        print("self.camera.pos::\t", self.camera.pos_x, self.camera.pos_y, " -> ",self.camera.objetivo_x, self.camera.objetivo_y)
 
     def input(self, acao):
         print(f"[ {acao} ]")

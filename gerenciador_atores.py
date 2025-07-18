@@ -20,10 +20,11 @@ class Gerenciador_Atores:
         for ator in self.atores.values():
             ator.update(dt)
 
-    def draw(self, screen):
+    def draw(self, screen, offset= None):
+        '''
+        O offset é para facilitar o uso de uma câmera externa'''
 
         for ator in self.atores.values():
-            ator.draw(screen)
-
-            
+            # correção para offset
+            ator.draw(screen, offset) 
         pass
