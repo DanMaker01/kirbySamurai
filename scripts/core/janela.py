@@ -6,7 +6,7 @@
 ###########################################
 # A Fazer:
 # - Modificações dos parametros por métodos??
-# - 
+# - Get e set Rect
 ###########################################
 
 

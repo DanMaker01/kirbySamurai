@@ -1,5 +1,5 @@
 import pygame
-from core.config import WIDTH, HEIGHT
+from scripts.core.config import WIDTH, HEIGHT
 
 class GameUI:
     def __init__(self, screen):

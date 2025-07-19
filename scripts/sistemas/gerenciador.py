@@ -10,24 +10,24 @@
 # A Fazer: 
 # - Inventario 
 # - Variaveis
-# - 
+# - Dialogo
 # - 
 ###########################
 
-from placar import Placar
-from persistencia import Persistencia
+from core.placar import Placar
+from core.persistencia import Persistencia
 # sub-sistemas
-from gerenciador_atores import Gerenciador_Atores
-from gerenciador_som import Gerenciador_Som
-from gerenciador_eventos import GerenciadorEventos
-from gerenciador_tela import GerenciadorTela
-from gerenciador_controle import Gerenciador_Controle
+from sistemas.gerenciador_atores import Gerenciador_Atores
+from sistemas.gerenciador_som import Gerenciador_Som
+from sistemas.gerenciador_eventos import GerenciadorEventos
+from sistemas.gerenciador_tela import GerenciadorTela
+from sistemas.gerenciador_controle import Gerenciador_Controle
 from core.config import *
-from ator import Ator
-from animacao import Animacao
+from atores.ator import Ator
+from core.animacao import Animacao
 import pygame
-from evento import *
-from camera import Camera
+from core.evento import *
+from core.camera import Camera
 import random
 
 class Gerenciador:

@@ -1,4 +1,4 @@
-from ator import Ator
+from scripts.atores.ator import Ator
 from typing import Dict
 
 class Gerenciador_Atores:

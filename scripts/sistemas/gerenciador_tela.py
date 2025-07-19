@@ -1,6 +1,7 @@
 import pygame
-from core.config import WIDTH, HEIGHT
-from camera import Camera
+from scripts.core.config import WIDTH, HEIGHT
+# from scripts.core.camera import Camera
+
 class GerenciadorTela:
     def __init__(self):
         self.superficie_fade = pygame.Surface((WIDTH, HEIGHT)).convert_alpha()

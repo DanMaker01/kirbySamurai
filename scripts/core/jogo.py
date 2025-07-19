@@ -13,10 +13,10 @@
 
 import pygame
 import sys
-from core.config import *
-from ui import GameUI
-from input_controller import InputController
-from gerenciador import Gerenciador
+from scripts.core.config import *
+from scripts.ui.ui import GameUI
+from scripts.core.input_controller import InputController
+from scripts.core.gerenciador import Gerenciador
 
 # Sistema Principal
 class Jogo:

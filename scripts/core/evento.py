@@ -21,13 +21,13 @@
 # - 
 ###########################################
 import pygame
-from camera import Camera
-from gerenciador_tela import GerenciadorTela
+from scripts.core.camera import Camera
+from scripts.sistemas.gerenciador_tela import GerenciadorTela
 ##########################################################################
 class Evento:
     def __init__(self, duracao_ms, callback=None):
         if duracao_ms == 0:
-            duracao_ms = 1
+            duracao_ms = 1 # para evitar divisões por 0, etc...
         self.duracao = duracao_ms
         self.callback = callback
         self.inicio = None
@@ -52,7 +52,7 @@ class Evento:
 
 
 ##########################################################################
-from gerenciador_controle import Gerenciador_Controle
+from scripts.sistemas.gerenciador_controle import Gerenciador_Controle
 class EventoInputLock(Evento):
     def __init__(self,gerenciador_controle, valor, callback=None):
         super().__init__(0, callback)
@@ -83,8 +83,8 @@ class EventoLimpaEventos(Evento):
         self.gerenciador_eventos.limpar_eventos()
         pass
 ##########################################################################
-from gerenciador_atores import Gerenciador_Atores
-from ator import Ator
+from scripts.sistemas.gerenciador_atores import Gerenciador_Atores
+from scripts.atores.ator import Ator
 
 
 class EventoAtorVisibilidade(Evento):

@@ -15,7 +15,7 @@
 
 
 import pygame
-from core.config import *
+from scripts.core.config import *
 
 class InputController:
     def __init__(self):

@@ -13,7 +13,7 @@
 # - 
 ###################################################################
 
-from jogo import Jogo
+from scripts.core.jogo import Jogo
 
 def main():
     jogo = Jogo()

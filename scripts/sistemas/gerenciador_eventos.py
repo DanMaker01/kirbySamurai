@@ -13,7 +13,7 @@
 # - eventos de fade não precisam ser esperados e não travam os controles
 # - 
 ###########################################
-from evento import *
+from scripts.core.evento import *
 import pygame
 
 class GerenciadorEventos:

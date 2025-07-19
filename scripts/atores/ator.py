@@ -1,10 +1,12 @@
 ##############################################################################
+# Conjuntos dos estados de animação e um sistema de física simples
+##############################################################################
 # A Fazer:
-# - Melhorar o sistema de posicao, ser um único, com get e set. 
+# - Melhorar o sistema de posicao, unificar, criar get e set posicao. 
 # - Pro draw é importante o anima.pos, pro resto é importante o fisica.pos
 ##############################################################################
 
-from animacao import Animacao
+from scripts.core.animacao import Animacao
 
 # --------------------------------------------------------------------
 class Ator:
@@ -20,7 +22,7 @@ class Ator:
         # propriedades
         self.ativa = True
 
-        # dialogo/colisao/etc
+        # dialogo/colisao/etc ?????? implementar
         # self.interagivel = False #quero manter
         self.set_visivel(visivel)
 
