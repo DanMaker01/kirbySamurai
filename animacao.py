@@ -25,8 +25,9 @@ class Animacao: # cada animação deve ter sua escala, o ator tem a escala dele 
 
         self.sprites = []
         # Store original images 
+        self.path = 'sprites/'
         if imagens is not None:
-            self.original_images = [self._carregar_imagem(img) for img in imagens]
+            self.original_images = [self._carregar_imagem(self.path + img if isinstance(img, str) else img) for img in imagens]
             self.sprites = []
             self._gerar_sprites()
 

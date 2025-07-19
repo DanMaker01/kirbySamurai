@@ -8,7 +8,7 @@ from animacao import Animacao
 
 # --------------------------------------------------------------------
 class Ator:
-    def __init__(self, animacoes=None, pos=(0.0, 0.0), escala=1.0, tintura=(255, 255, 255, 255)):
+    def __init__(self, animacoes=None, pos=(0.0, 0.0), escala=1.0, tintura=(255, 255, 255, 255), visivel=True   ):
         
         # componentes
         self.animacoes = ControladorAnimacoes(animacoes or {}, pos, escala)
@@ -22,6 +22,7 @@ class Ator:
 
         # dialogo/colisao/etc
         # self.interagivel = False #quero manter
+        self.set_visivel(visivel)
 
     def update(self, dt):
         if not self.ativa:
@@ -41,6 +42,11 @@ class Ator:
         self.animacoes.pos=(x,y)
         self.fisica.posicao=(x,y)
 
+    def set_visivel(self, is_visible):
+        self.animacoes.set_visivel(is_visible)
+    
+    def get_visivel(self):
+        return self.animacoes.visivel
 # --------------------------------------------------------------------
 # ????? implementar:
 # - atualiza_pos (sempre que o ator atualizar)
@@ -54,6 +60,7 @@ class ControladorAnimacoes:
         self.pos = pos # depende da posição dos 
         self.escala = escala
         self.aplicar()
+        self.visivel = True
 
     def aplicar(self):
         '''Aplica posição e escala às animações'''
@@ -68,7 +75,7 @@ class ControladorAnimacoes:
             self.animacoes[nome].update(dt)
 
     def draw(self, screen, tintura, offset=(0, 0)):
-        if self.animacoes:
+        if self.animacoes and self.visivel:
             nome = list(self.animacoes.keys())[self.animacao_atual]
             anim = self.animacoes[nome]
             if anim.ativa:
@@ -113,6 +120,9 @@ class ControladorAnimacoes:
         if not self.animacoes:
             return None
         return list(self.animacoes.keys())[self.animacao_atual]
+    
+    def set_visivel(self, valor):
+        self.visivel = valor
 
 class FisicaAtor:
     def __init__(self, pos):

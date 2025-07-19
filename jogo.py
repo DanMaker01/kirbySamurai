@@ -13,7 +13,7 @@
 
 import pygame
 import sys
-from config import *
+from core.config import *
 from ui import GameUI
 from input_controller import InputController
 from gerenciador import Gerenciador

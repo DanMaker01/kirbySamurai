@@ -6,10 +6,10 @@
 ###########################################
 # A Fazer:
 # - Criar as propriedades extras
-# - Padronizar os retornos no config
+# - Padronizar os retornos no config??? deletar?
 # - InputLock
+# - Set_visivel
 # - Modificar Variavel
-# - 
 # - Chamar Diálogo
 # - Abrir Opções
 # - 
@@ -20,13 +20,14 @@
 # - Provavelmente draw não será necessário em nenhum evento
 # - 
 ###########################################
-# from config import EV_ABRIR_DIALOGO, EV_
 import pygame
 from camera import Camera
 from gerenciador_tela import GerenciadorTela
 ##########################################################################
 class Evento:
     def __init__(self, duracao_ms, callback=None):
+        if duracao_ms == 0:
+            duracao_ms = 1
         self.duracao = duracao_ms
         self.callback = callback
         self.inicio = None
@@ -35,10 +36,13 @@ class Evento:
     def iniciar(self, tempo_atual):
         self.inicio = tempo_atual
         self.concluido = False
-        print("iniciando:\t",self.__class__.__name__, self.duracao, self.inicio)
+        print(f"iniciando:\t{self.__class__.__name__}\t\t{self.duracao}\t{self.inicio}")
 
     def atualizar(self, tempo_atual):
         if self.concluido:
+            return
+        if self.inicio == None:
+            self.concluido = True
             return
         if tempo_atual - self.inicio >= self.duracao:
             self.concluido = True
@@ -46,15 +50,59 @@ class Evento:
     def desenhar(self, tela):
         pass  # por padrão não desenha nada
 
+
+##########################################################################
+from gerenciador_controle import Gerenciador_Controle
+class EventoInputLock(Evento):
+    def __init__(self,gerenciador_controle, valor, callback=None):
+        super().__init__(0, callback)
+        self.valor = valor
+        self.gerenciador_controle:Gerenciador_Controle = gerenciador_controle
+
+    def iniciar(self, tempo_atual):
+        super().iniciar(tempo_atual)
+        self.gerenciador_controle.set_input_lock(self.valor)
+        # self.concluido = True
+        pass
+        
+        # return super().iniciar(tempo_atual)
+    
 ##########################################################################
 
 class EventoEspera(Evento):
     # Apenas espera sem desenhar nada 
     pass
 
+
+class EventoLimpaEventos(Evento):
+    def __init__(self,gerenciador_eventos, callback=None):
+        super().__init__(0, callback)
+        self.gerenciador_eventos = gerenciador_eventos
+    def iniciar(self, tempo_atual):
+        super().iniciar(tempo_atual)
+        self.gerenciador_eventos.limpar_eventos()
+        pass
 ##########################################################################
 from gerenciador_atores import Gerenciador_Atores
 from ator import Ator
+
+
+class EventoAtorVisibilidade(Evento):
+    def __init__(self, gerenciador_atores, nome_ator, valor, callback=None):
+        super().__init__(0, callback)
+        self.valor = valor
+        self.gerenciador_atores :Gerenciador_Atores = gerenciador_atores
+        self.nome_ator = nome_ator
+    def iniciar(self, tempo_atual):
+        super().iniciar(tempo_atual)
+        ator = self.gerenciador_atores.pegar_ator(self.nome_ator)
+        if ator == None:
+            print("não achou ator:",self.nome_ator)
+            return
+        ator.set_visivel(self.valor)
+        # self.concluido = True
+
+    
 class EventoMoverAtor(Evento):
     def __init__(self, duracao_ms, gerenciador_atores, nome_ator, destino_x, destino_y, callback=None):
         super().__init__(duracao_ms, callback)
@@ -153,8 +201,6 @@ class EventoMoverCamera(Evento):
         
         # self.camera.set_posicao(nova_x, nova_y)
         self.camera.mover_para(nova_x, nova_y)
-        
-        # print(f"self.camera.pos: ",self.camera.pos_x,self.camera.pos_y )
         
         if proporcao >= 1.0:
             self.concluido = True

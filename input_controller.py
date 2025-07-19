@@ -15,7 +15,7 @@
 
 
 import pygame
-from config import *
+from core.config import *
 
 class InputController:
     def __init__(self):
@@ -34,7 +34,9 @@ class InputController:
             pygame.K_UP: UP,
             pygame.K_DOWN: DOWN,
             pygame.K_z: CONFIRM,
-            pygame.K_x: CANCEL
+            pygame.K_x: CANCEL,
+            pygame.K_z: P1_HIT,
+            pygame.K_p: P2_HIT
         }
         self.pressed_keys = {}  # key -> timestamp
 
