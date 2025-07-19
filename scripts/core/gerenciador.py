@@ -92,18 +92,18 @@ class Gerenciador:
 
         self.gerenciador_eventos.adicionar_espera(1000)
 
-        self.gerenciador_eventos.adicionar_espera(4000)
-        self.gerenciador_eventos.adicionar_ator_move(4000,'t1',-10,0) 
-        self.gerenciador_eventos.adicionar_ator_move(4000,'t2',10,0) 
+        self.gerenciador_eventos.adicionar_espera(3000)
+        self.gerenciador_eventos.adicionar_ator_move(3000,'t1',-10,0) 
+        self.gerenciador_eventos.adicionar_ator_move(3000,'t2',10,0) 
         
         # self.gerenciador_eventos.adicionar_espera(5000)
         # self.gerenciador_eventos.adicionar_espera(5000)
         
         self.gerenciador_eventos.adicionar_espera(2000)
         #
-        self.gerenciador_eventos.adicionar_espera(4000)
-        self.gerenciador_eventos.adicionar_ator_move(4000,'t1',-360,0) 
-        self.gerenciador_eventos.adicionar_ator_move(4000,'t2',360,0) 
+        self.gerenciador_eventos.adicionar_espera(3000)
+        self.gerenciador_eventos.adicionar_ator_move(3000,'t1',-360,0) 
+        self.gerenciador_eventos.adicionar_ator_move(3000,'t2',360,0) 
 
         self.gerenciador_eventos.adicionar_espera(500)
 
@@ -139,7 +139,7 @@ class Gerenciador:
         self.gerenciador_tela.atualizar(self.tempo_atual, dt)
         self.gerenciador_atores.update(dt)
         self.camera.atualizar(dt)
-
+        self.placar.atualizar(dt)
     def draw(self):
         self.screen.fill((0, 0, 0))  # Preenche a tela com preto (vazio)
 
