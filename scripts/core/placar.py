@@ -9,7 +9,7 @@ class Placar:
         self.font = pygame.font.SysFont(None, 30)
         self._on_modified = None
         self._blink = False
-        self._blink_duration = 2.0  # segundos
+        self._blink_duration = 3.0  # segundos
         self._blink_elapsed = 0.0   # tempo acumulado do blink
 
     def set_on_modified(self, callback):

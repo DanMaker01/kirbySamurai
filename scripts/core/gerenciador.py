@@ -32,6 +32,8 @@ from scripts.core.animacao import Animacao
 from scripts.core.evento import *
 from scripts.core.camera import Camera
 #
+from scripts.ui.notificador import Notificador
+#
 from scripts.atores.ator import Ator
 
 ######################################################
@@ -46,16 +48,22 @@ class Gerenciador:
         self.placar = Placar()
         self.gerenciador_atores = Gerenciador_Atores()
         self.gerenciador_som    = Gerenciador_Som()
-        self.gerenciador_tela   = GerenciadorTela()
+        self.gerenciador_tela   = GerenciadorTela(iniciar_preto=True)
         self.gerenciador_controle=Gerenciador_Controle()
         self.camera             = Camera(largura_tela=WIDTH, altura_tela=HEIGHT)
+
+        self.tempo_largada = -1
 
         self.gerenciador_eventos= GerenciadorEventos(self.gerenciador_controle, 
                                                      self.gerenciador_tela, 
                                                      self.gerenciador_atores,
                                                      self.camera)
+        #UI
+        self.notificador = Notificador(self.screen)
+        
         # Preparar cena e roteiro
         self.reset()
+
         
     def reset(self):
         self._criar_atores()
@@ -71,8 +79,8 @@ class Gerenciador:
         #
         y_geral = 150
         player1 = Ator(pos = (20,20+y_geral), animacoes={
-            "parado": Animacao( ["p1_parado.png"] ),
-            "ataque": Animacao( ["p1_ataque.png"] )
+            "parado": Animacao( ["p1_parado.png",] ),
+            "ataque": Animacao( ["p1_ataque.png",] )
             })
 
         player2 =  Ator(pos = (240,30+y_geral), animacoes={
@@ -100,23 +108,23 @@ class Gerenciador:
 
         self.gerenciador_eventos.adicionar_espera(1000)
 
-        self.gerenciador_eventos.adicionar_espera(3000)
-        self.gerenciador_eventos.adicionar_ator_move(3000,'t1',-10,0) 
-        self.gerenciador_eventos.adicionar_ator_move(3000,'t2',10,0) 
+        self.gerenciador_eventos.adicionar_espera(2000)
+        self.gerenciador_eventos.adicionar_ator_move(2000,'t1',-10,0) 
+        self.gerenciador_eventos.adicionar_ator_move(2000,'t2',10,0) 
         
         # self.gerenciador_eventos.adicionar_espera(5000)
         # self.gerenciador_eventos.adicionar_espera(5000)
         
         self.gerenciador_eventos.adicionar_espera(2000)
         #
-        self.gerenciador_eventos.adicionar_espera(3000)
-        self.gerenciador_eventos.adicionar_ator_move(3000,'t1',-360,0) 
-        self.gerenciador_eventos.adicionar_ator_move(3000,'t2',360,0) 
+        self.gerenciador_eventos.adicionar_espera(2000)
+        self.gerenciador_eventos.adicionar_ator_move(2000,'t1',-360,0) 
+        self.gerenciador_eventos.adicionar_ator_move(2000,'t2',360,0) 
 
-        self.gerenciador_eventos.adicionar_espera(500)
+        # self.gerenciador_eventos.adicionar_espera(500)
 
-        self.gerenciador_eventos.adicionar_espera(3000)
-        self.gerenciador_eventos.adicionar_fade_out(3000)
+        self.gerenciador_eventos.adicionar_espera(1000)
+        self.gerenciador_eventos.adicionar_fade_out(1000)
         
         tempo_random_largada = random.randint(2000, 4000)
         self.gerenciador_eventos.adicionar_espera(tempo_random_largada)
@@ -124,7 +132,7 @@ class Gerenciador:
         
         self.gerenciador_eventos.adicionar_espera(0)
         self.gerenciador_eventos.adicionar_fade_in(0)
-        self.gerenciador_eventos.adicionar_ator_set_visibilidade('largada',True)
+        self.gerenciador_eventos.adicionar_ator_set_visibilidade('largada',True,callback=self._salvar_tempo_largada)
         
         
         #libera o controle, ativa contador, ...
@@ -141,6 +149,9 @@ class Gerenciador:
         self.gerenciador_eventos.adicionar_espera(1000)
         self.gerenciador_eventos.adicionar_limpa_eventos(callback=self.reset)
 
+    def _salvar_tempo_largada(self):
+        self.tempo_largada = pygame.time.get_ticks()
+
     def update(self, dt):
         self.tempo_atual = pygame.time.get_ticks()
         self.gerenciador_eventos.atualizar(self.tempo_atual)
@@ -148,6 +159,7 @@ class Gerenciador:
         self.gerenciador_atores.update(dt)
         self.camera.atualizar(dt)
         self.placar.atualizar(dt)
+        self.notificador.atualizar()
 
     def draw(self):
         self.screen.fill((0, 0, 0))  # Preenche a tela com preto (vazio)
@@ -158,17 +170,19 @@ class Gerenciador:
         # self.gerenciador_eventos.desenhar(self.screen) #atualmente não faz nada, retirar???
         self.gerenciador_tela.desenhar(self.screen)
         self.placar.draw(self.screen)
-        # self.gerenciador_eventos.desenhar_debug(self.screen)
+        self.gerenciador_eventos.desenhar_debug(self.screen)
+        self.notificador.draw()
         # print("self.camera.pos::\t", self.camera.pos_x, self.camera.pos_y, " -> ",self.camera.objetivo_x, self.camera.objetivo_y)
 
     def input(self, acao):
-        print(f"[ {acao} ]")
         if self.gerenciador_controle.input_lock:
-            print("Entrada ignorada: controle travado.")
+            print(f"[ {acao} ]\t->\tEntrada ignorada: controle travado.")
             return
         self._ataque(acao)
 
     def _ataque(self, acao):
+        self.gerenciador_eventos.limpar_eventos()
+        self.gerenciador_eventos.adicionar_input_lock(True)
         ator_largada = self.gerenciador_atores.pegar_ator('largada')
         if acao == P1_HIT:
             if ator_largada.get_visivel():
@@ -177,9 +191,10 @@ class Gerenciador:
                 ator_p1.animacoes.trocar("ataque")
                 print("P1 acertou!!!!!!!!!!!!")
                 self.placar.adicionar_pontos('p1',1)
-                self.gerenciador_eventos.limpar_eventos()
                 self.gerenciador_eventos.adicionar_espera(1000)
                 self.gerenciador_eventos.adicionar_espera(1000)
+                tempo = pygame.time.get_ticks() - self.tempo_largada
+                self.notificador.adicionar_mensagem(f"P1 acertou, tempo: {tempo/1000}s", 2000,0,50)
                 self.gerenciador_eventos.adicionar_fade_out(1000, callback=self.reset)
             else:
                 print("P1 errou!!!!!!!!!!!!!")
@@ -194,10 +209,14 @@ class Gerenciador:
                 ator_p2.animacoes.trocar("ataque")
                 print("P2 acertou!!!!!!!!!!!!")
                 self.placar.adicionar_pontos('p2',1)
-                self.gerenciador_eventos.limpar_eventos()
+                # self.gerenciador_eventos.limpar_eventos()
                 self.gerenciador_eventos.adicionar_espera(1000)
                 self.gerenciador_eventos.adicionar_espera(1000)
+                tempo = pygame.time.get_ticks() - self.tempo_largada
+                self.notificador.adicionar_mensagem(f"P2 acertou, tempo: {tempo/1000}s",2000,WIDTH-250,50)
                 self.gerenciador_eventos.adicionar_fade_out(1000, callback=self.reset)#aqui pode trocar o callback por um novo EventoResetCena???
+                # print()
+                # self.
             else:
                 print("P2 errou!!!!!!!!!!!!!")
                 self.placar.adicionar_pontos('p1',1)

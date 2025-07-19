@@ -36,7 +36,7 @@ class Evento:
     def iniciar(self, tempo_atual):
         self.inicio = tempo_atual
         self.concluido = False
-        print(f"iniciando:\t{self.__class__.__name__}\t\t{self.duracao}\t{self.inicio}")
+        # print(f"iniciando:\t{self.__class__.__name__}\t\t{self.duracao}\t{self.inicio}")
 
     def atualizar(self, tempo_atual):
         if self.concluido:

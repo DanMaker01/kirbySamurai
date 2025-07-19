@@ -3,9 +3,9 @@ from scripts.core.config import WIDTH, HEIGHT
 # from scripts.core.camera import Camera
 
 class GerenciadorTela:
-    def __init__(self):
+    def __init__(self, iniciar_preto=False):
         self.superficie_fade = pygame.Surface((WIDTH, HEIGHT)).convert_alpha()
-        self.alfa_tela_atual = 0  # alfa fixo atual (aplicado sempre)
+        self.alfa_tela_atual = 255 if iniciar_preto else 0  # alfa fixo atual (aplicado sempre)
         self.fade_em_andamento = False
 
         self.tipo_fade = None

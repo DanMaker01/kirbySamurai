@@ -14,7 +14,7 @@
 import pygame
 import sys
 from scripts.core.config import *
-from scripts.ui.ui import GameUI
+# from scripts.ui.ui import GameUI
 from scripts.core.input_controller import InputController
 from scripts.core.gerenciador import Gerenciador
 
@@ -33,7 +33,7 @@ class Jogo:
 
     def _criar_componentes(self):
         self.clock = pygame.time.Clock()
-        self.ui = GameUI(self.screen)
+        # self.ui = GameUI(self.screen)
         # self.loop = GameLoop(self.screen, self.clock, self.ui)
         self.input_controller = InputController()
         self.gerenciador = Gerenciador(self.screen, self.clock)
@@ -45,7 +45,7 @@ class Jogo:
             self.handle_events()
             self.gerenciador.update( self.clock.get_time() / 1000.0 )
             self.gerenciador.draw()
-            self.ui.draw()
+            # self.ui.draw()
             pygame.display.flip()
 
             self.clock.tick(60)
