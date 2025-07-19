@@ -62,21 +62,29 @@ class Gerenciador:
         self._setup_eventos()
 
     def _criar_atores(self):
-        triangulo_sup = Ator(pos = (-360,0), animacoes=
-                            {"padrao": Animacao(["triangulo_sup2.png"])})
+        # 
+        triangulo_sup = Ator(pos = (-360,0), animacoes={
+            "padrao": Animacao(["triangulo_sup2.png"])})
+        
         triangulo_inf = Ator(pos = (360,0), 
                              animacoes={"padrao": Animacao(["triangulo_inf2.png",])})
+        #
         y_geral = 150
-        player1 =       Ator( pos = (0,20+y_geral), 
-                             animacoes={"parado": Animacao( ["p1_parado.png"] )})
+        player1 = Ator(pos = (20,20+y_geral), animacoes={
+            "parado": Animacao( ["p1_parado.png"] ),
+            "ataque": Animacao( ["p1_ataque.png"] )
+            })
 
-        player2 =       Ator( pos = (260,30+y_geral), 
-                             animacoes={"parado": Animacao( ["p2_parado.png"] )})
+        player2 =  Ator(pos = (240,30+y_geral), animacoes={
+            "parado": Animacao( ["p2_parado.png"] ),
+            "ataque": Animacao( ["p2_ataque.png"] )
+            })
 
-        largada =       Ator( pos = (WIDTH/2-30,HEIGHT/6), 
-                             animacoes={"parado": Animacao( ["largada00.png","largada01.png"] )},visivel=False)
+        largada =  Ator(pos = (WIDTH/2-30,HEIGHT/6), 
+                        animacoes={"parado": Animacao( ["largada00.png","largada01.png"] )},
+                        visivel=False)
         
-
+        # adiciona
         self.gerenciador_atores.adicionar_ator('p1', player1)
         self.gerenciador_atores.adicionar_ator('p2', player2)
         self.gerenciador_atores.adicionar_ator("t1", triangulo_sup)
@@ -140,6 +148,7 @@ class Gerenciador:
         self.gerenciador_atores.update(dt)
         self.camera.atualizar(dt)
         self.placar.atualizar(dt)
+
     def draw(self):
         self.screen.fill((0, 0, 0))  # Preenche a tela com preto (vazio)
 
@@ -161,13 +170,20 @@ class Gerenciador:
 
     def _ataque(self, acao):
         if acao == P1_HIT:
-            # print("player 1 atacou")
             ator_largada = self.gerenciador_atores.pegar_ator('largada')
             if ator_largada.get_visivel():
+                ator_p1 = self.gerenciador_atores.pegar_ator('p1')
+                ator_p1.transladar(80,0)
+                ator_p1.animacoes.trocar("ataque")
                 print("P1 acertou!!!!!!!!!!!!")
                 self.placar.adicionar_pontos('p1',1)
                 self.gerenciador_eventos.limpar_eventos()
-                self.reset()
+                self.gerenciador_eventos.adicionar_espera(1000)
+                self.gerenciador_eventos.adicionar_espera(1000)
+                self.gerenciador_eventos.adicionar_fade_out(1000, callback=self.reset)
+                # self.gerenciador_eventos.adicionar_espera(1000, callback=self.reset)
+                
+                # self.reset()
 
             else:
                 print("P1 errou!!!!!!!!!!!!!")
@@ -177,10 +193,16 @@ class Gerenciador:
         if acao == P2_HIT:
             ator_largada = self.gerenciador_atores.pegar_ator('largada')
             if ator_largada.get_visivel():
+                ator_p2 = self.gerenciador_atores.pegar_ator('p2')
+                ator_p2.transladar(-80,0)
+                ator_p2.animacoes.trocar("ataque")
                 print("P2 acertou!!!!!!!!!!!!")
                 self.placar.adicionar_pontos('p2',1)
                 self.gerenciador_eventos.limpar_eventos()
-                self.reset()
+                self.gerenciador_eventos.adicionar_espera(1000)
+                self.gerenciador_eventos.adicionar_espera(1000)
+                self.gerenciador_eventos.adicionar_fade_out(1000, callback=self.reset)
+                # self.reset()
 
             else:
                 print("P2 errou!!!!!!!!!!!!!")

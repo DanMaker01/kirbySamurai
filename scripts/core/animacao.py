@@ -2,9 +2,9 @@
 
 import pygame
 
-# @ implementar spritesheets
-# @ implementar escala nas animações, não no Ator
-# @ alterar o indice a qualquer momento
+# ??? implementar spritesheets
+# ??? implementar escala nas animações, não no Ator
+# ??? alterar o indice a qualquer momento
 
 class Animacao: # cada animação deve ter sua escala, o ator tem a escala dele tbm, que gerencia a de todas animações
     def __init__(self, imagens=None, pos=(0, 0), vel_anima=0.1, loop=True, escala=1.0):
@@ -92,9 +92,9 @@ class Animacao: # cada animação deve ter sua escala, o ator tem a escala dele 
         self.tempo_acumulado += dt
         if self.tempo_acumulado >= self.vel_anima:
             self.tempo_acumulado = 0
-            self.avanca_sprite()
+            self._avanca_sprite()
 
-    def avanca_sprite(self):
+    def _avanca_sprite(self):
         self.indice_atual += 1
         if self.indice_atual >= len(self.sprites):
             if self.loop:

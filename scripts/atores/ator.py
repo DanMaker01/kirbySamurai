@@ -40,6 +40,11 @@ class Ator:
             return
         self.animacoes.draw(screen, tintura=self.tintura, offset=offset)
     
+         
+    def transladar(self, dx, dy):
+        self.set_posicao(self.fisica.posicao[0]+dx,
+                         self.fisica.posicao[1]+dy)
+
     def set_posicao(self,x,y):
         self.animacoes.pos=(x,y)
         self.fisica.posicao=(x,y)
@@ -82,7 +87,7 @@ class ControladorAnimacoes:
             anim = self.animacoes[nome]
             if anim.ativa:
                 anim.draw(screen, tintura, offset=offset)
-
+           
     def set_pos(self, x, y):
         self.pos = (x, y)
         self.aplicar()
@@ -113,6 +118,8 @@ class ControladorAnimacoes:
         if nome in self.animacoes:
             self.animacao_atual = list(self.animacoes.keys()).index(nome)
             self.animacoes[nome].reset()
+        else:
+            print(f"não encontrou animacão {nome} no ator.")
 
     def trocar_vel(self, nome, nova_vel):
         if nome in self.animacoes:

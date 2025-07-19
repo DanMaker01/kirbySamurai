@@ -86,6 +86,17 @@ class EventoLimpaEventos(Evento):
 from scripts.sistemas.gerenciador_atores import Gerenciador_Atores
 from scripts.atores.ator import Ator
 
+class EventoAtorAnimacao(Evento):
+    def __init__(self, gerenciador_atores:Gerenciador_Atores, nome_ator,nome_animacao, callback=None):
+        super().__init__(0, callback)
+        self.gerenciador_atores = gerenciador_atores
+        self.nome_ator = nome_ator
+        self.nome_animacao = nome_animacao
+    def iniciar(self,tempo_atual):
+        super().iniciar(tempo_atual)
+        ator :Ator = self.gerenciador_atores.pegar_ator(self.nome_ator)
+        ator.animacoes.trocar(self.nome_ator)
+
 
 class EventoAtorVisibilidade(Evento):
     def __init__(self, gerenciador_atores, nome_ator, valor, callback=None):
@@ -96,9 +107,9 @@ class EventoAtorVisibilidade(Evento):
     def iniciar(self, tempo_atual):
         super().iniciar(tempo_atual)
         ator = self.gerenciador_atores.pegar_ator(self.nome_ator)
-        if ator == None:
-            print("não achou ator:",self.nome_ator)
-            return
+        # if ator == None:
+        #     print("não achou ator:",self.nome_ator)
+        #     return
         ator.set_visivel(self.valor)
         # self.concluido = True
 
