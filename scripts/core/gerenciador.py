@@ -169,8 +169,8 @@ class Gerenciador:
         self._ataque(acao)
 
     def _ataque(self, acao):
+        ator_largada = self.gerenciador_atores.pegar_ator('largada')
         if acao == P1_HIT:
-            ator_largada = self.gerenciador_atores.pegar_ator('largada')
             if ator_largada.get_visivel():
                 ator_p1 = self.gerenciador_atores.pegar_ator('p1')
                 ator_p1.transladar(80,0)
@@ -181,17 +181,13 @@ class Gerenciador:
                 self.gerenciador_eventos.adicionar_espera(1000)
                 self.gerenciador_eventos.adicionar_espera(1000)
                 self.gerenciador_eventos.adicionar_fade_out(1000, callback=self.reset)
-                # self.gerenciador_eventos.adicionar_espera(1000, callback=self.reset)
-                
-                # self.reset()
-
             else:
                 print("P1 errou!!!!!!!!!!!!!")
                 self.placar.adicionar_pontos('p2',1)
                 self.gerenciador_eventos.limpar_eventos()
                 self.reset()
+        
         if acao == P2_HIT:
-            ator_largada = self.gerenciador_atores.pegar_ator('largada')
             if ator_largada.get_visivel():
                 ator_p2 = self.gerenciador_atores.pegar_ator('p2')
                 ator_p2.transladar(-80,0)
@@ -201,9 +197,7 @@ class Gerenciador:
                 self.gerenciador_eventos.limpar_eventos()
                 self.gerenciador_eventos.adicionar_espera(1000)
                 self.gerenciador_eventos.adicionar_espera(1000)
-                self.gerenciador_eventos.adicionar_fade_out(1000, callback=self.reset)
-                # self.reset()
-
+                self.gerenciador_eventos.adicionar_fade_out(1000, callback=self.reset)#aqui pode trocar o callback por um novo EventoResetCena???
             else:
                 print("P2 errou!!!!!!!!!!!!!")
                 self.placar.adicionar_pontos('p1',1)
