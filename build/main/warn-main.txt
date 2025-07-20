@@ -16,7 +16,7 @@ IMPORTANT: Do NOT post this list to the issue-tracker. Use it as a basis for
 
 missing module named pwd - imported by posixpath (delayed, conditional, optional), shutil (delayed, optional), tarfile (optional), pathlib (delayed, optional), subprocess (delayed, conditional, optional), http.server (delayed, optional), netrc (delayed, conditional), getpass (delayed), setuptools._distutils.util (delayed, conditional, optional), setuptools._distutils.archive_util (optional), setuptools._vendor.backports.tarfile (optional)
 missing module named grp - imported by shutil (delayed, optional), tarfile (optional), pathlib (delayed, optional), subprocess (delayed, conditional, optional), setuptools._distutils.archive_util (optional), setuptools._vendor.backports.tarfile (optional)
-missing module named posix - imported by os (conditional, optional), posixpath (optional), shutil (conditional), importlib._bootstrap_external (conditional)
+missing module named posix - imported by posixpath (optional), shutil (conditional), importlib._bootstrap_external (conditional), os (conditional, optional)
 missing module named resource - imported by posix (top-level)
 missing module named _frozen_importlib_external - imported by importlib._bootstrap (delayed), importlib (optional), importlib.abc (optional), zipimport (top-level)
 excluded module named _frozen_importlib - imported by importlib (optional), importlib.abc (optional), zipimport (top-level)
@@ -232,7 +232,6 @@ missing module named numpy._core.amin - imported by numpy._core (top-level), num
 missing module named numpy._core.amax - imported by numpy._core (top-level), numpy.linalg._linalg (top-level), numpy (conditional)
 missing module named numpy._core.all - imported by numpy._core (top-level), numpy.linalg._linalg (top-level), numpy.testing._private.utils (delayed), numpy (conditional)
 missing module named numpy._core.add - imported by numpy._core (top-level), numpy.linalg._linalg (top-level), numpy (conditional)
-missing module named yaml - imported by numpy.__config__ (delayed)
 missing module named numpy._distributor_init_local - imported by numpy (optional), numpy._distributor_init (optional)
 missing module named pygame._common - imported by pygame.rect (top-level), pygame.rwobject (top-level), pygame.color (top-level), pygame.surface (top-level), pygame.display (top-level), pygame.draw (top-level), pygame.image (top-level), pygame.key (top-level), pygame.mask (top-level), pygame.transform (top-level), pygame.pixelcopy (top-level), pygame.pixelarray (top-level), pygame.font (top-level), pygame.mixer_music (top-level), pygame.mixer (top-level)
 missing module named 'pygame.overlay' - imported by pygame (optional)
