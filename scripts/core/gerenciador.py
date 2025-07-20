@@ -42,24 +42,33 @@ class Gerenciador:
         self.clock = clock
         self.tempo_atual = pygame.time.get_ticks()
 
-        # Subsistemas
+        # Core
+        self.notificador = Notificador(self.screen)
         self.persistencia_placar = Persistencia()
         self.placar = Placar()
+        self.camera             = Camera(largura_tela=WIDTH, altura_tela=HEIGHT)
+        # Subsistemas
         self.gerenciador_atores = Gerenciador_Atores()
         self.gerenciador_som    = Gerenciador_Som()
         self.gerenciador_tela   = GerenciadorTela(iniciar_preto=True)
         self.gerenciador_controle=Gerenciador_Controle()
-        self.camera             = Camera(largura_tela=WIDTH, altura_tela=HEIGHT)
 
         self.tempo_largada = -1
 
         self.gerenciador_eventos= GerenciadorEventos(self.gerenciador_controle, 
+                                                     self.gerenciador_som,
                                                      self.gerenciador_tela, 
                                                      self.gerenciador_atores,
                                                      self.camera)
         #UI
-        self.notificador = Notificador(self.screen)
         
+
+        #carregar sons
+        self.gerenciador_som.carregar_som("ataque1", "audio/094-Attack06.wav")
+        self.gerenciador_som.carregar_som("ataque2", "audio/095-Attack07.wav")
+        self.gerenciador_som.carregar_som("largada", "audio/056-Right02.wav")
+        self.gerenciador_som.carregar_musica("vento", "audio/003-Wind03.wav")
+
         # Preparar cena e roteiro
         self.reset()
 
@@ -99,6 +108,7 @@ class Gerenciador:
         self.gerenciador_atores.adicionar_ator("largada", largada)
 
     def _setup_eventos(self):
+        self.gerenciador_som.tocar_musica("vento", loop=True)
         self.gerenciador_eventos.adicionar_espera(0)
         self.gerenciador_eventos.adicionar_input_lock(True)
         
@@ -125,14 +135,16 @@ class Gerenciador:
         self.gerenciador_eventos.adicionar_espera(1000)
         self.gerenciador_eventos.adicionar_fade_out(1000)
         
-        tempo_random_largada = random.randint(2000, 4000)
+        tempo_random_largada = random.randint(1000, 4000)
         self.gerenciador_eventos.adicionar_espera(tempo_random_largada)
         self.gerenciador_eventos.adicionar_input_lock(False)
+        
         
         self.gerenciador_eventos.adicionar_espera(0)
         self.gerenciador_eventos.adicionar_fade_in(0)
         self.gerenciador_eventos.adicionar_ator_set_visibilidade('largada',True,callback=self._salvar_tempo_largada)
-        
+        self.gerenciador_eventos.adicionar_som('largada',0.5)
+        # self.gerenciador_eventos.adicionar_espera(0,callback=self.gerenciador_som.tocar_som('largada'))
         
         #libera o controle, ativa contador, ...
         self.gerenciador_eventos.adicionar_espera(4000)
@@ -189,12 +201,19 @@ class Gerenciador:
             return
 
         if acao == P1_HIT:
-            self._registrar_acerto('p1', deslocamento=+80, pos_msg=(0, 50))
+            self._registrar_acerto('p1', deslocamento=+150, pos_msg=(20, 50))
 
         elif acao == P2_HIT:
-            self._registrar_acerto('p2', deslocamento=-80, pos_msg=(WIDTH - 250, 50))
+            self._registrar_acerto('p2', deslocamento=-150, pos_msg=(WIDTH - 120, 50))
 
     def _registrar_acerto(self, jogador, deslocamento, pos_msg):
+        
+        r = random.randint(0,1)
+        if r==0:
+            self.gerenciador_som.tocar_som("ataque1")
+        else:
+            self.gerenciador_som.tocar_som("ataque2")
+
         ator = self.gerenciador_atores.pegar_ator(jogador)
         ator.transladar(deslocamento, 0)
         ator.animacoes.trocar("ataque")
@@ -204,7 +223,8 @@ class Gerenciador:
 
         tempo_reacao = pygame.time.get_ticks() - self.tempo_largada
         tempo_str = f"{tempo_reacao / 1000:.3f}s"
-        self.notificador.adicionar_mensagem(f"{jogador.upper()} acertou! Tempo: {tempo_str}", 2000, *pos_msg)
+        self.notificador.adicionar_mensagem(f"{jogador.upper()} acertou!",  500, *pos_msg)
+        self.notificador.adicionar_mensagem(f"{tempo_str}",                 2500, *pos_msg)
 
         self.gerenciador_eventos.adicionar_espera(2000)
         self.gerenciador_eventos.adicionar_espera(1000)

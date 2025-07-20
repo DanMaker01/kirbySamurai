@@ -23,6 +23,7 @@
 import pygame
 from scripts.core.camera import Camera
 from scripts.sistemas.gerenciador_tela import GerenciadorTela
+from scripts.sistemas.gerenciador_som import Gerenciador_Som 
 ##########################################################################
 class Evento:
     def __init__(self, duracao_ms, callback=None):
@@ -50,6 +51,20 @@ class Evento:
     def desenhar(self, tela):
         pass  # por padrão não desenha nada
 
+
+##########################################################################
+class EventoSom(Evento):
+    def __init__(self, gerenciador_som,nome_som,volume=1.0, callback=None):
+        super().__init__(0, callback)
+        self.gerenciador_som:Gerenciador_Som = gerenciador_som
+        self.nome_som = nome_som
+        self.volume = volume
+    def iniciar(self, tempo_atual):
+        self.gerenciador_som.tocar_som(self.nome_som, volume=self.volume)
+        # print(f"tocando:{self.nome_som}, vol={self.volume}")
+        # return super().iniciar(tempo_atual)
+    
+#
 
 ##########################################################################
 from scripts.sistemas.gerenciador_controle import Gerenciador_Controle

@@ -72,12 +72,13 @@ class Mensagem:
         decorrido = tempo_atual - self.tempo_inicio
         alpha = 255
         offset_y = 0
+        offset_max = 5  # antes era 30
 
         if self.estado == "entrando":
             t = min(1.0, decorrido / self.duracao_entrada)
             eased = ease_in_out(t)
             alpha = int(eased * 255)
-            offset_y = int((1 - eased) * 30)
+            offset_y = int((1 - eased) * offset_max)
 
         elif self.estado == "mostrando":
             alpha = 255
@@ -87,7 +88,7 @@ class Mensagem:
             t = min(1.0, decorrido / self.duracao_saida)
             eased = ease_in_out(t)
             alpha = int((1 - eased) * 255)
-            offset_y = int(eased * 30)
+            offset_y = -int(eased * offset_max)
 
         surface = self.fonte.render(self.texto, True, (255, 255, 0))
         fundo = pygame.Surface((surface.get_width() + 20, surface.get_height() + 10), pygame.SRCALPHA)

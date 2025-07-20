@@ -17,11 +17,12 @@ from scripts.core.evento import *
 import pygame
 
 class GerenciadorEventos:
-    def __init__(self, gerenciador_controle,gerenciador_tela, gerenciador_atores, camera):
+    def __init__(self, gerenciador_controle, gerenciador_som,gerenciador_tela, gerenciador_atores, camera):
         self.fila_eventos = []                           # fila de eventos do roteiro
         self.tempo_pausado = False
         # Referência de cada sub-sistema
         self.gerenciador_tela = gerenciador_tela
+        self.gerenciador_som = gerenciador_som
         self.gerenciador_atores = gerenciador_atores
         self.gerenciador_controle = gerenciador_controle
         self.camera = camera
@@ -63,6 +64,9 @@ class GerenciadorEventos:
 
     def adicionar_limpa_eventos(self,callback=None):
         self._adicionar_evento( EventoLimpaEventos(self, callback))
+
+    def adicionar_som(self, nome_som,volume=1.0, callback=None):
+        self._adicionar_evento( EventoSom(self.gerenciador_som, nome_som,volume,callback))
     # ------------------------------------------------------------
 
     def atualizar(self, tempo_atual):
