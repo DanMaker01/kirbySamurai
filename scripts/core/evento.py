@@ -1,5 +1,5 @@
 ###########################################
-# Evento
+# Evento, EventoSom,EventoMoverAtor,EventoLimpaEventos, ...
 ###########################################
 # Modular: Sim
 # Finalizada: Não
@@ -24,6 +24,9 @@ import pygame
 from scripts.core.camera import Camera
 from scripts.sistemas.gerenciador_tela import GerenciadorTela
 from scripts.sistemas.gerenciador_som import Gerenciador_Som 
+from scripts.sistemas.gerenciador_atores import Gerenciador_Atores
+from scripts.atores.ator import Ator
+from scripts.sistemas.gerenciador_controle import Gerenciador_Controle
 ##########################################################################
 class Evento:
     def __init__(self, duracao_ms, callback=None):
@@ -50,8 +53,6 @@ class Evento:
 
     def desenhar(self, tela):
         pass  # por padrão não desenha nada
-
-
 ##########################################################################
 class EventoSom(Evento):
     def __init__(self, gerenciador_som,nome_som,volume=1.0, callback=None):
@@ -63,11 +64,7 @@ class EventoSom(Evento):
         self.gerenciador_som.tocar_som(self.nome_som, volume=self.volume)
         # print(f"tocando:{self.nome_som}, vol={self.volume}")
         # return super().iniciar(tempo_atual)
-    
-#
-
 ##########################################################################
-from scripts.sistemas.gerenciador_controle import Gerenciador_Controle
 class EventoInputLock(Evento):
     def __init__(self,gerenciador_controle, valor, callback=None):
         super().__init__(0, callback)
@@ -81,13 +78,10 @@ class EventoInputLock(Evento):
         pass
         
         # return super().iniciar(tempo_atual)
-    
 ##########################################################################
-
 class EventoEspera(Evento):
     # Apenas espera sem desenhar nada 
     pass
-
 
 class EventoLimpaEventos(Evento):
     def __init__(self,gerenciador_eventos, callback=None):
@@ -98,9 +92,6 @@ class EventoLimpaEventos(Evento):
         self.gerenciador_eventos.limpar_eventos()
         pass
 ##########################################################################
-from scripts.sistemas.gerenciador_atores import Gerenciador_Atores
-from scripts.atores.ator import Ator
-
 class EventoAtorAnimacao(Evento):
     def __init__(self, gerenciador_atores:Gerenciador_Atores, nome_ator,nome_animacao, callback=None):
         super().__init__(0, callback)
@@ -111,7 +102,6 @@ class EventoAtorAnimacao(Evento):
         super().iniciar(tempo_atual)
         ator :Ator = self.gerenciador_atores.pegar_ator(self.nome_ator)
         ator.animacoes.trocar(self.nome_ator)
-
 
 class EventoAtorVisibilidade(Evento):
     def __init__(self, gerenciador_atores, nome_ator, valor, callback=None):
@@ -127,7 +117,6 @@ class EventoAtorVisibilidade(Evento):
         #     return
         ator.set_visivel(self.valor)
         # self.concluido = True
-
     
 class EventoMoverAtor(Evento):
     def __init__(self, duracao_ms, gerenciador_atores, nome_ator, destino_x, destino_y, callback=None):
@@ -168,9 +157,7 @@ class EventoMoverAtor(Evento):
             self.concluido = True
             if self.callback:
                 self.callback()
-
 #####################################################################################
-
 class EventoFade(Evento):
     def __init__(self, tipo, duracao_ms, tela: GerenciadorTela, callback=None):
         super().__init__(duracao_ms, callback)
@@ -197,7 +184,6 @@ class EventoFade(Evento):
     def desenhar(self, tela):
         # Nada — o GerenciadorTela já desenha automaticamente com o alfa atual
         pass
-
 ##########################################################################
 class EventoMoverCamera(Evento):
     def __init__(self, duracao_ms, camera: Camera, destino_x, destino_y, callback=None):

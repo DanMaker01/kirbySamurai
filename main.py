@@ -3,13 +3,16 @@
 ###################################################################
 # Jogo de tempo de reação, multiplayer.
 ###################################################################
-# Modular: Sim
+# Modular: Sim, faltando poucas classes para ser completamente modular.
 # Finalizado: Não
 ###################################################################
 # A Fazer:
-# - Agrupar scripts em pastas
-# - 
-# - 
+# - Som início
+# - Posicionamento
+# - Background
+# - Troca animação com mais frames ao atacar
+# - Ação quando queima a largada
+# - Menu de revanche quando chega em melhor de 5
 # - 
 ###################################################################
 

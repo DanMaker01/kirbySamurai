@@ -4,7 +4,7 @@
 ######################################################
 # Orquestra os sistemas modulares
 ######################################################
-# Modular: Não
+# Modular: Não, criar classe de Roteiro, Cena, Etc
 # Finalizada: Não
 ######################################################
 # A Fazer: 
@@ -12,9 +12,9 @@
 # - GerenciadorEscolhas
 # - Dialogo
 # - GerenciadorCena
-# - Roteiro???? cena já resolve?
+# - Roteiro???? cena já resolve? não! Então Roteiro lê uma variável
+# - Sistema de empate (E)
 ######################################################
-
 import pygame
 import random
 # core
@@ -32,9 +32,8 @@ from scripts.sistemas.gerenciador_tela import GerenciadorTela
 from scripts.sistemas.gerenciador_controle import Gerenciador_Controle
 # UI
 from scripts.ui.notificador import Notificador
-# Atores
+# Atores #deve sair daqui em breve
 from scripts.atores.ator import Ator
-
 ######################################################
 class Gerenciador:
     def __init__(self, screen, clock):
@@ -44,7 +43,7 @@ class Gerenciador:
 
         # Core
         self.notificador = Notificador(self.screen)
-        self.persistencia_placar = Persistencia()
+        self.memoria = Persistencia()
         self.placar = Placar()
         self.camera             = Camera(largura_tela=WIDTH, altura_tela=HEIGHT)
         # Subsistemas
@@ -190,7 +189,7 @@ class Gerenciador:
             print(f"[ {acao} ]\t->\tEntrada ignorada: controle travado.")
             return
         self.gerenciador_controle.input_lock = True
-        self._ataque(acao)
+        self._ataque(acao) #no momento do input, deve guardar os estados dos bindings no jogo, e o jogo decide quem venceu, pois aí dá pra tratar empates. #??????? (E)
 
     def _ataque(self, acao):
         self.gerenciador_eventos.limpar_eventos()
