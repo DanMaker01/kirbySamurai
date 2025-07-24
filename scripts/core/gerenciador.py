@@ -72,7 +72,7 @@ class Gerenciador:
         self.reset()
 
         
-    def reset(self):
+    def reset(self):#????
         self._criar_atores()
         self._setup_eventos()
 
