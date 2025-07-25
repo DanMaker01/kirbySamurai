@@ -1,11 +1,14 @@
 ###########################################
 # Jogo
 ###########################################
+# Classe que controla o Loop principal
+# Também controla o tamanho da janela, ícone, título
+###########################################
 # Modular: Sim
 # Finalizada: Não
 ###########################################
 # A Fazer:
-# - Adicionar coisas
+# - Pensar onde colocar esse clock, melhor jogar para o gerenciador?
 # - 
 ###########################################
 
@@ -33,8 +36,6 @@ class Jogo:
 
     def _criar_componentes(self):
         self.clock = pygame.time.Clock()
-        # self.ui = GameUI(self.screen)
-        # self.loop = GameLoop(self.screen, self.clock, self.ui)
         self.input_controller = InputController()
         self.gerenciador = Gerenciador(self.screen, self.clock)
 
@@ -51,11 +52,6 @@ class Jogo:
             self.clock.tick(60)
         #finalizar jogo
         self._encerrar()
-
-    def _encerrar(self):
-        print("...encerrando jogo.")
-        pygame.quit()
-        sys.exit()
 
     #input
     def handle_events(self):
@@ -75,3 +71,7 @@ class Jogo:
                 #     #sempre que não tiver binding para esta tecla e não tiver largando-a 
                 #     print(f"tecla {result['key']} sem função definida.")
                     
+    def _encerrar(self):
+        print("...encerrando jogo.")
+        pygame.quit()
+        sys.exit()

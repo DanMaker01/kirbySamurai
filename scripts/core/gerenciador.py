@@ -39,7 +39,7 @@ class Gerenciador:
     def __init__(self, screen, clock):
         self.screen = screen
         self.clock = clock
-        self.tempo_atual = pygame.time.get_ticks()
+        self.tempo_atual = pygame.time.get_ticks()#repete no update
 
         # Core
         self.notificador = Notificador(self.screen)
@@ -63,43 +63,54 @@ class Gerenciador:
         
 
         #carregar sons
+        self.carregar_som()
+
+        # Preparar cena e roteiro #??? mudar para carregar_cena
+        self.reset()
+
+    def carregar_som(self):
         self.gerenciador_som.carregar_som("ataque1", "audio/094-Attack06.wav")
         self.gerenciador_som.carregar_som("ataque2", "audio/095-Attack07.wav")
         self.gerenciador_som.carregar_som("largada", "audio/056-Right02.wav")
         self.gerenciador_som.carregar_musica("vento", "audio/003-Wind03.wav")
-
-        # Preparar cena e roteiro
-        self.reset()
-
         
     def reset(self):#????
         self._criar_atores()
         self._setup_eventos()
 
     def _criar_atores(self):
-        # 
+        ##############################################
+        bg = Ator(animacoes={
+            'padrao': Animacao( ['bg.png'] )})
+
         triangulo_sup = Ator(pos = (-360,0), animacoes={
             "padrao": Animacao(["triangulo_sup2.png"])})
         
-        triangulo_inf = Ator(pos = (360,0), 
-                             animacoes={"padrao": Animacao(["triangulo_inf2.png",])})
-        #
+        triangulo_inf = Ator(pos = (360,0), animacoes={
+            "padrao": Animacao(["triangulo_inf2.png",])})
+        
+        
+        ##############################################
         y_geral = 150
         player1 = Ator(pos = (20,20+y_geral), animacoes={
             "parado": Animacao( ["p1_parado.png",] ),
-            "ataque": Animacao( ["p1_ataque.png",] )
+            "ataque": Animacao( ["p1_ataque.png",] ),
+            "ataque_fim": Animacao( ["p1_ataque_fim.png",] ),
             })
 
         player2 =  Ator(pos = (240,30+y_geral), animacoes={
             "parado": Animacao( ["p2_parado.png"] ),
             "ataque": Animacao( ["p2_ataque.png"] )
             })
-
-        largada =  Ator(pos = (WIDTH/2-30,HEIGHT/6), 
+        
+        ##############################################
+        largada =  Ator(pos = (WIDTH/2-30,HEIGHT/16), 
                         animacoes={"parado": Animacao( ["largada00.png","largada01.png"] )},
                         visivel=False)
         
+        ##############################################
         # adiciona
+        self.gerenciador_atores.adicionar_ator('bg', bg)
         self.gerenciador_atores.adicionar_ator('p1', player1)
         self.gerenciador_atores.adicionar_ator('p2', player2)
         self.gerenciador_atores.adicionar_ator("t1", triangulo_sup)
@@ -189,50 +200,39 @@ class Gerenciador:
             print(f"[ {acao} ]\t->\tEntrada ignorada: controle travado.")
             return
         self.gerenciador_controle.input_lock = True
-        self._ataque(acao) #no momento do input, deve guardar os estados dos bindings no jogo, e o jogo decide quem venceu, pois aí dá pra tratar empates. #??????? (E)
-
-    def _ataque(self, acao):
         self.gerenciador_eventos.limpar_eventos()
 
         ator_largada = self.gerenciador_atores.pegar_ator('largada')
         if not ator_largada.get_visivel():
-            self._registrar_erro(acao)
+            # Erro de largada, ponto vai para o oponente
+            oponente = 'p2' if acao == P1_HIT else 'p1'
+            print(f"{acao} ERROU!")
+            self.placar.adicionar_pontos(oponente, 1)
+            self.reset()
             return
 
-        if acao == P1_HIT:
-            self._registrar_acerto('p1', deslocamento=+150, pos_msg=(20, 50))
+        if acao in (P1_HIT, P2_HIT):
+            # Acerto
+            jogador     = 'p1' if acao == P1_HIT else 'p2'
+            deslocamento = +150 if jogador == 'p1' else -150
+            pos_msg      = (20, 50) if jogador == 'p1' else (WIDTH - 120, 50)
 
-        elif acao == P2_HIT:
-            self._registrar_acerto('p2', deslocamento=-150, pos_msg=(WIDTH - 120, 50))
+            # Som de ataque aleatório
+            som = "ataque1" if random.randint(0, 1) == 0 else "ataque2"
+            self.gerenciador_som.tocar_som(som)
 
-    def _registrar_acerto(self, jogador, deslocamento, pos_msg):
-        
-        r = random.randint(0,1)
-        if r==0:
-            self.gerenciador_som.tocar_som("ataque1")
-        else:
-            self.gerenciador_som.tocar_som("ataque2")
+            ator = self.gerenciador_atores.pegar_ator(jogador)
+            ator.transladar(deslocamento, 0)
+            ator.animacoes.trocar("ataque")
 
-        ator = self.gerenciador_atores.pegar_ator(jogador)
-        ator.transladar(deslocamento, 0)
-        ator.animacoes.trocar("ataque")
-        
-        print(f"{jogador.upper()} acertou!")
-        self.placar.adicionar_pontos(jogador, 1)
+            print(f"{jogador.upper()} acertou!")
+            self.placar.adicionar_pontos(jogador, 1)
 
-        tempo_reacao = pygame.time.get_ticks() - self.tempo_largada
-        tempo_str = f"{tempo_reacao / 1000:.3f}s"
-        self.notificador.adicionar_mensagem(f"{jogador.upper()} acertou!",  500, *pos_msg)
-        self.notificador.adicionar_mensagem(f"{tempo_str}",                 2500, *pos_msg)
+            tempo_reacao = pygame.time.get_ticks() - self.tempo_largada
+            tempo_str = f"{tempo_reacao / 1000:.3f}s"
+            self.notificador.adicionar_mensagem(f"{jogador.upper()} acertou!",  500, *pos_msg)
+            self.notificador.adicionar_mensagem(f"{tempo_str}",                 2500, *pos_msg)
 
-        self.gerenciador_eventos.adicionar_espera(2000)
-        self.gerenciador_eventos.adicionar_espera(1000)
-        self.gerenciador_eventos.adicionar_fade_out(1000, callback=self.reset)
-        
-        # self.gerenciador_eventos.adicionar_espera(1000, callback=self.reset)
-
-    def _registrar_erro(self, acao):
-        oponente = 'p2' if acao == P1_HIT else 'p1'
-        print(f"{acao} ERROU!")
-        self.placar.adicionar_pontos(oponente, 1)
-        self.reset()
+            self.gerenciador_eventos.adicionar_espera(2000)
+            self.gerenciador_eventos.adicionar_espera(1000)
+            self.gerenciador_eventos.adicionar_fade_out(1000, callback=self.reset)

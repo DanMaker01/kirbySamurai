@@ -8,11 +8,15 @@
 ###################################################################
 # A Fazer:
 # - Som início
-# - Posicionamento
-# - Background
-# - Troca animação com mais frames ao atacar
+# - Posicionamento e dimensionamento da tela
+# - Trocar a animação algumas vezes, com mais frames ao atacar
 # - Ação quando queima a largada
 # - Menu de revanche quando chega em melhor de 5
+# - 
+# - 
+# Feito:
+# - Background
+# - 
 # - 
 ###################################################################
 
@@ -27,5 +31,7 @@ if __name__ == "__main__":
 
 
 ###################################################################
+#
+####################################################################
 #
 ####################################################################

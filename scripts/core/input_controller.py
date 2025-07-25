@@ -9,7 +9,8 @@
 # A Fazer:
 # - Definir botões finais
 # - Sistema de edição dinâmico
-# - 
+# - Retornar a lista de botões apertados no momento
+# --> Isso vai liberar um sistema de empate
 ###########################################
 
 
@@ -41,6 +42,10 @@ class InputController:
         self.pressed_keys = {}  # key -> timestamp
 
     def process_event(self, event):
+        # mudar para um sistema: #?????
+        # - QUando você aperta ele modifica uma variável interna
+        # - Quando você lê o input ele retorna uma lista do bindings On/Off
+
         now = pygame.time.get_ticks()
 
         if event.type == pygame.KEYDOWN:
