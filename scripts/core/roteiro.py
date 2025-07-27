@@ -1,27 +1,18 @@
-##################################################################
+
+# #################################################################
 # Roteiro
-##################################################################
+# #################################################################
 # Modular: Sim
 # Finalizada: Não
-##################################################################
+# #################################################################
 # A Fazer:
 # - 
-# - 
-# - 
+# - Verificar se descobrir_pg_sera_ativa está bom
 # - 
 ##################################################################
-
-class Pagina:
-    def __init__(self, condicao=None, lista_eventos=None):
-        self.condicao = condicao  # Ex: "fase>=2" ou "invisivel==False"
-        self.lista_eventos = lista_eventos if lista_eventos else []
-
-    def __repr__(self):
-        return f"Pagina(condicao='{self.condicao}', eventos={len(self.lista_eventos)})"
-
 import operator
 import re
-
+from scripts.core.pagina import Pagina
 class Roteiro:
     def __init__(self):
         self.lista_paginas = [] #vir com padrão
@@ -45,6 +36,7 @@ class Roteiro:
         """
         pagina_escolhida = None
         for pagina in self.lista_paginas:
+            pagina:Pagina
             if self._avaliar_condicao(pagina.condicao, variaveis):
                 pagina_escolhida = pagina
         return pagina_escolhida

@@ -28,7 +28,7 @@ class Notificador:
         self.fila_mensagens = []
         self.mensagem_atual = None
 
-    def adicionar_mensagem(self, texto, duracao_ms=2000, pos_x=0, pos_y=0):
+    def adicionar_mensagem(self, texto, duracao_ms=1000, pos_x=0, pos_y=0):
         self.fila_mensagens.append((texto, duracao_ms, pos_x, pos_y))
 
     def atualizar(self):
@@ -57,13 +57,35 @@ class Mensagem:
         self.x = x
         self.y = y
         self.fonte = fonte
-
         self.tempo_inicio = tempo_inicio
-        self.estado = "entrando"  # "entrando", "mostrando", "saindo"
+        self.estado = "entrando"
 
-        self.duracao_entrada = 400
-        self.duracao_saida = 600
+        self.duracao_entrada = 200
+        self.duracao_saida = 300
         self.duracao_mostrar = duracao_total - self.duracao_entrada - self.duracao_saida
+
+        self.offset_max = 10
+
+        # Pré-renderiza texto e fundo para performance
+        self._pre_render()
+
+    def _pre_render(self):
+        self.text_surface = self.fonte.render(self.texto, True, (255, 255, 0))
+        tw, th = self.text_surface.get_size()
+        self.padding = 16
+
+        self.box_width = tw + self.padding * 1.5
+        self.box_height = th + self.padding * 1.5
+
+        # Cria fundo arredondado uma vez
+        self.box_surface = pygame.Surface((self.box_width, self.box_height), pygame.SRCALPHA)
+        fundo_cor = (20, 20, 20, 220)  # Fundo escuro semi-transparente
+        pygame.draw.rect(
+            self.box_surface,
+            fundo_cor,
+            (0, 0, self.box_width, self.box_height),
+            border_radius=12
+        )
 
     def atualizar_estado(self, tempo_atual):
         decorrido = tempo_atual - self.tempo_inicio
@@ -77,21 +99,18 @@ class Mensagem:
             self.tempo_inicio = tempo_atual
 
         elif self.estado == "saindo" and decorrido >= self.duracao_saida:
-            return False  # terminou
+            return False
 
         return True
 
     def draw(self, screen, tempo_atual):
         decorrido = tempo_atual - self.tempo_inicio
-        alpha = 255
-        offset_y = 0
-        offset_max = 5  # antes era 30
 
         if self.estado == "entrando":
             t = min(1.0, decorrido / self.duracao_entrada)
             eased = ease_in_out(t)
             alpha = int(eased * 255)
-            offset_y = int((1 - eased) * offset_max)
+            offset_y = int((1 - eased) * self.offset_max)
 
         elif self.estado == "mostrando":
             alpha = 255
@@ -101,17 +120,19 @@ class Mensagem:
             t = min(1.0, decorrido / self.duracao_saida)
             eased = ease_in_out(t)
             alpha = int((1 - eased) * 255)
-            offset_y = -int(eased * offset_max)
+            offset_y = -int(eased * self.offset_max)
 
-        surface = self.fonte.render(self.texto, True, (255, 255, 0))
-        fundo = pygame.Surface((surface.get_width() + 20, surface.get_height() + 10), pygame.SRCALPHA)
-        fundo.fill((0, 0, 0, alpha))
+        # Aplica alpha
+        box = self.box_surface.copy()
+        box.set_alpha(alpha)
+        text = self.text_surface.copy()
+        text.set_alpha(alpha)
 
-        pos_x = self.x
-        pos_y = self.y + offset_y
+        pos_x = self.x - self.box_width // 2
+        pos_y = self.y + offset_y - self.box_height // 2
 
-        screen.blit(fundo, (pos_x - 10, pos_y - 5))
+        screen.blit(box, (pos_x, pos_y))
 
-        surface_alpha = surface.copy()
-        surface_alpha.set_alpha(alpha)
-        screen.blit(surface_alpha, (pos_x, pos_y))
+        # Centraliza o texto dentro da box
+        text_rect = text.get_rect(center=(pos_x + self.box_width // 2, pos_y + self.box_height // 2))
+        screen.blit(text, text_rect)
