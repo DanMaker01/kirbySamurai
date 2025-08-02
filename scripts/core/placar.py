@@ -1,7 +1,19 @@
+#####################################################################
+# Placar
+#####################################################################
+# Modular: SIm
+# Final: Não
+#####################################################################
+# À fazer:
+# - incluir uma janela
+#####################################################################
 import pygame
 
 class Placar:
-    def __init__(self):
+    def __init__(self,y=20):
+        # self.x = x
+        self.y = y
+        
         self.pontuacao = {
             'p1': 0,
             'p2': 0
@@ -51,4 +63,4 @@ class Placar:
             color = (255, 255, 255)
 
         text_surface = self.font.render(score_text, True, color)
-        screen.blit(text_surface, (screen.get_width() // 2 - text_surface.get_width() // 2, 20))
+        screen.blit(text_surface, (screen.get_width() // 2 - text_surface.get_width() // 2, self.y))

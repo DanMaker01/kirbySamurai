@@ -7,7 +7,7 @@ import pygame
 # ??? alterar o indice a qualquer momento
 
 class Animacao: # cada animação deve ter sua escala, o ator tem a escala dele tbm, que gerencia a de todas animações
-    def __init__(self, imagens=None, pos=(0, 0), vel_anima=0.1, loop=True, escala=1.0):
+    def __init__(self, imagens=None, pos=(0, 0), vel_anima=0.25, loop=True, escala=1.0):
         """
         imagens: lista de caminhos ou Surfaces
         pos: posição inicial (x, y)

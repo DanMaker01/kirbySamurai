@@ -4,15 +4,21 @@
 # Modular: Não
 # Finalizada: Não
 ###########################################
-# Ordena e supervisiona a fila de eventos 
+# Ordena e supervisiona a fila de eventos
+# A fila atualmente é única, 
 ###########################################
 # A Fazer:
 # - Gerenciar totalmente os eventos
 # - Retorna acoes para o Gerenciador
-# - Apenas eventos de Wait podem esperar
-# - eventos de fade não precisam ser esperados e não travam os controles
+# - Fazer todas as 
+# - Expandir para filas em paralelo (como paralel process do RPGMaker) 
 # - 
 ###########################################
+# Feito:
+# - Apenas eventos de Wait podem esperar
+# - Eventos de fade não precisam ser esperados e não travam os controles
+###########################################
+
 from scripts.core.evento import *
 import pygame
 
@@ -38,36 +44,41 @@ class GerenciadorEventos:
 
     def _adicionar_evento(self, evento):
         self.fila_eventos.append(evento)
-    # ------------------------------------------------------------
+    
+    # =====================================================================
+    # FUNÇÕES DE ADICIONAR CADA TIPO DE EVENTO NA FILA 
+    # =====================================================================
     # Tela
     def adicionar_fade_in(self, duracao_ms, callback=None):
         self._adicionar_evento(EventoFade("in", duracao_ms, self.gerenciador_tela, callback))
     def adicionar_fade_out(self, duracao_ms, callback=None):
         self._adicionar_evento(EventoFade("out", duracao_ms, self.gerenciador_tela, callback))
-    
+    # =====================================================================
     # Camera
     def adicionar_camera_move(self, duracao_ms, x,y, callback=None ):
         self._adicionar_evento(EventoMoverCamera(duracao_ms, self.camera, x,y, callback))
-    
+    # =====================================================================
     # Atores   
-    def adicionar_ator_move(self, duracao_ms,nome, destino_x=0,destino_y=0,callback=None):
+    def adicionar_ator_move_incremento(self,duracao_ms, nome, dx=0,dy=0,callback=None):
+        self._adicionar_evento(  EventoMoverAtorPorIncremento(duracao_ms,self.gerenciador_atores, nome, dx,dy,callback) )
+    def adicionar_ator_move(self, duracao_ms,nome, destino_x=None,destino_y=None,callback=None):
         self._adicionar_evento( EventoMoverAtor(duracao_ms,self.gerenciador_atores,nome,destino_x,destino_y, callback) )
     def adicionar_ator_set_visibilidade(self,nome,valor,callback=None):
         self._adicionar_evento( EventoAtorVisibilidade(self.gerenciador_atores,nome,valor,callback) )
-
+    def adicionar_ator_muda_animacao(self, nome_ator, nome_animacao, callback=None):
+        self._adicionar_evento( EventoAtorAnimacao(self.gerenciador_atores,nome_ator,nome_animacao, callback=callback) )
+    # =====================================================================
     # Controle
     def adicionar_input_lock(self,valor=False,callback=None):
         self._adicionar_evento( EventoInputLock(self.gerenciador_controle,valor,callback) )
     # Jogo
     def adicionar_espera(self, duracao_ms, callback=None):
         self._adicionar_evento(EventoEspera(duracao_ms, callback))
-
     def adicionar_limpa_eventos(self,callback=None):
         self._adicionar_evento( EventoLimpaEventos(self, callback))
-
     def adicionar_som(self, nome_som,volume=1.0, callback=None):
         self._adicionar_evento( EventoSom(self.gerenciador_som, nome_som,volume,callback))
-    # ------------------------------------------------------------
+    # =====================================================================
 
     def atualizar(self, tempo_atual):
         # Atualiza todos os eventos ativos (inclusive esperas)
@@ -108,16 +119,17 @@ class GerenciadorEventos:
 
     def desenhar(self, tela):
         '''
-        Atualmente não está fazendo nada. Retirar??????
+        Atualmente não está fazendo nada. Retirar?????? Sim.
         '''
         # if self.evento_atual:
         #     self.evento_atual.desenhar(tela)
         pass
 
-    def eventos_ativos(self):
-        return bool(self.fila_eventos) or bool(self.eventos_ativos)
+    # def _eventos_ativos(self): # parece que não está usando em nenhum lugar.
+    #     return bool(self.fila_eventos) or bool(self.eventos_ativos)
+    
     def desenhar_debug(self, tela):
-        fonte = pygame.font.SysFont("Consolas", 12) #integrar
+        fonte = pygame.font.SysFont("Consolas", 12) #integrar?? unificar?
         x = 10
         y = 300
         linha = 0

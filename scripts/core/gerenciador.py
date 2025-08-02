@@ -8,12 +8,13 @@
 # Finalizada: Não
 ######################################################
 # A Fazer: 
-# - Inventario 
-# - GerenciadorEscolhas
-# - Dialogo
-# - GerenciadorCena
-# - Roteiro???? cena já resolve? não! Então Roteiro lê uma variável
 # - Sistema de empate (E)
+# - Dialogo
+# - GerenciadorEscolhas
+######################################################
+# - Inventario 
+# - GerenciadorCena ??? Futuramente
+# - Roteiro???? cena já resolve? não! Então Roteiro lê uma variável
 ######################################################
 import pygame
 import random
@@ -30,6 +31,7 @@ from scripts.sistemas.gerenciador_som import Gerenciador_Som
 from scripts.sistemas.gerenciador_eventos import GerenciadorEventos
 from scripts.sistemas.gerenciador_tela import GerenciadorTela
 from scripts.sistemas.gerenciador_controle import Gerenciador_Controle
+from scripts.sistemas.gerenciador_variaveis import GerenciadorVariaveis
 # UI
 from scripts.ui.notificador import Notificador
 # Atores #deve sair daqui em breve
@@ -44,16 +46,18 @@ class Gerenciador:
         # Core
         self.notificador = Notificador(self.screen)
         self.memoria = Persistencia()
-        self.placar = Placar()
+        self.placar = Placar(y=350)
         self.camera             = Camera(largura_tela=WIDTH, altura_tela=HEIGHT)
         # Subsistemas
         self.gerenciador_atores = Gerenciador_Atores()
         self.gerenciador_som    = Gerenciador_Som()
         self.gerenciador_tela   = GerenciadorTela(iniciar_preto=True)
         self.gerenciador_controle=Gerenciador_Controle()
+        self.gerenciador_variaveis = GerenciadorVariaveis()
 
         self.tempo_largada = -1
 
+        # quase todos gerenciadores serão passados. Passar gerenciador em si? #????
         self.gerenciador_eventos= GerenciadorEventos(self.gerenciador_controle, 
                                                      self.gerenciador_som,
                                                      self.gerenciador_tela, 
@@ -63,12 +67,12 @@ class Gerenciador:
         
 
         #carregar sons
-        self.carregar_som()
+        self._carregar_som()
 
         # Preparar cena e roteiro #??? mudar para carregar_cena
         self.reset()
 
-    def carregar_som(self):
+    def _carregar_som(self):
         self.gerenciador_som.carregar_som("ataque1", "audio/094-Attack06.wav")
         self.gerenciador_som.carregar_som("ataque2", "audio/095-Attack07.wav")
         self.gerenciador_som.carregar_som("largada", "audio/056-Right02.wav")
@@ -92,15 +96,17 @@ class Gerenciador:
         
         ##############################################
         y_geral = 150
-        player1 = Ator(pos = (20,20+y_geral), animacoes={
-            "parado": Animacao( ["p1_parado.png",] ),
+        player1 = Ator(pos = (40,0+y_geral), animacoes={
+            # "parado": Animacao( [f"et0{i}.png" for i in range(6)] ),
+            "parado" : Animacao( ["p1_parado.png",] ),
             "ataque": Animacao( ["p1_ataque.png",] ),
             "ataque_fim": Animacao( ["p1_ataque_fim.png",] ),
             })
 
         player2 =  Ator(pos = (240,30+y_geral), animacoes={
             "parado": Animacao( ["p2_parado.png"] ),
-            "ataque": Animacao( ["p2_ataque.png"] )
+            "ataque": Animacao( ["p2_ataque.png"] ),
+            "ataque_fim": Animacao( ["p2_ataque_fim.png"] ),
             })
         
         ##############################################
@@ -191,7 +197,7 @@ class Gerenciador:
         # self.gerenciador_eventos.desenhar(self.screen) #atualmente não faz nada, retirar???
         self.gerenciador_tela.desenhar(self.screen)
         self.placar.draw(self.screen)
-        self.gerenciador_eventos.desenhar_debug(self.screen)
+        # self.gerenciador_eventos.desenhar_debug(self.screen)
         self.notificador.draw()
         # print("self.camera.pos::\t", self.camera.pos_x, self.camera.pos_y, " -> ",self.camera.objetivo_x, self.camera.objetivo_y)
 
@@ -199,6 +205,8 @@ class Gerenciador:
         if self.gerenciador_controle.input_lock:
             print(f"[ {acao} ]\t->\tEntrada ignorada: controle travado.")
             return
+        
+        # necessário?
         self.gerenciador_controle.input_lock = True
         self.gerenciador_eventos.limpar_eventos()
 
@@ -213,24 +221,39 @@ class Gerenciador:
 
         if acao in (P1_HIT, P2_HIT):
             # Acerto
-            jogador     = 'p1' if acao == P1_HIT else 'p2'
-            deslocamento = +150 if jogador == 'p1' else -150
-            pos_msg      = (90, 50) if jogador == 'p1' else (WIDTH - 80, 50)
+            # ===================================================
+            
+            # Config
+            # ===================================================
+            nome_jogador_atacando    = 'p1' if acao == P1_HIT else 'p2'
+            #
+            deslocamento = +150 if nome_jogador_atacando == 'p1' else -150
+            pos_msg      = (90, 50) if nome_jogador_atacando == 'p1' else (WIDTH - 80, 50)
 
             # Som de ataque aleatório
-            som = "ataque1" if random.randint(0, 1) == 0 else "ataque2"
-            self.gerenciador_som.tocar_som(som)
+            nome_som = "ataque1" if random.randint(0, 1) == 0 else "ataque2"
+            
+            # ===================================================
+            self.gerenciador_eventos.adicionar_espera(1)
+            self.gerenciador_eventos.adicionar_som(nome_som)
+            self.gerenciador_eventos.adicionar_ator_muda_animacao(nome_jogador_atacando,"ataque")
+            self.gerenciador_eventos.adicionar_ator_move_incremento(1,nome_jogador_atacando,deslocamento)
+            
+            self.gerenciador_eventos.adicionar_espera(200)
+            self.gerenciador_eventos.adicionar_ator_move_incremento(500, nome_jogador_atacando,deslocamento/1.5,0)
+            self.gerenciador_eventos.adicionar_espera(300)
+            self.gerenciador_eventos.adicionar_ator_muda_animacao(nome_jogador_atacando,'ataque_fim')
 
-            ator = self.gerenciador_atores.pegar_ator(jogador)
-            ator.transladar(deslocamento, 0)
-            ator.animacoes.trocar("ataque")
+            self.gerenciador_eventos.adicionar_espera(200)
+            self.gerenciador_eventos.adicionar_ator_muda_animacao(nome_jogador_atacando, "parado")
 
-            print(f"{jogador.upper()} acertou!")
-            self.placar.adicionar_pontos(jogador, 1)
+            # self.gerenciador_eventos.adicionar_espera(500)
+            print(f"{nome_jogador_atacando.upper()} acertou!")
+            self.placar.adicionar_pontos(nome_jogador_atacando, 1)
 
             tempo_reacao = pygame.time.get_ticks() - self.tempo_largada
             tempo_str = f"{tempo_reacao / 1000:.3f}s"
-            self.notificador.adicionar_mensagem(f"{jogador.upper()} acertou!",  500, *pos_msg)
+            self.notificador.adicionar_mensagem(f"{nome_jogador_atacando.upper()} acertou!",  500, *pos_msg)
             self.notificador.adicionar_mensagem(f"{tempo_str}",                 1000, *pos_msg)
             # self.notificador.adicionar_mensagem(f"{tempo_str}", *pos_msg)
 

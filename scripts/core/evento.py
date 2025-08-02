@@ -101,7 +101,7 @@ class EventoAtorAnimacao(Evento):
     def iniciar(self,tempo_atual):
         super().iniciar(tempo_atual)
         ator :Ator = self.gerenciador_atores.pegar_ator(self.nome_ator)
-        ator.animacoes.trocar(self.nome_ator)
+        ator.animacoes.trocar(self.nome_animacao)
 
 class EventoAtorVisibilidade(Evento):
     def __init__(self, gerenciador_atores, nome_ator, valor, callback=None):
@@ -118,8 +118,49 @@ class EventoAtorVisibilidade(Evento):
         ator.set_visivel(self.valor)
         # self.concluido = True
     
+class EventoMoverAtorPorIncremento(Evento):
+    def __init__(self, duracao_ms, gerenciador_atores, nome_ator, delta_x=0, delta_y=0, callback=None):
+        super().__init__(duracao_ms, callback)
+        self.gerenciador_atores: Gerenciador_Atores = gerenciador_atores
+        self.nome_ator = nome_ator
+        self.delta_x = delta_x
+        self.delta_y = delta_y
+        self.inicio_x = None
+        self.inicio_y = None
+        self.destino_x = None
+        self.destino_y = None
+
+    def iniciar(self, tempo_atual):
+        super().iniciar(tempo_atual)
+        ator: Ator = self.gerenciador_atores.pegar_ator(self.nome_ator)
+        if ator is None:
+            print('Não achou o ator:', self.nome_ator)
+            return
+
+        self.inicio_x, self.inicio_y = ator.fisica.posicao
+        self.destino_x = self.inicio_x + self.delta_x
+        self.destino_y = self.inicio_y + self.delta_y
+
+        duracao_seg = self.duracao / 1000.0  # ms → s
+        vel_x = self.delta_x / duracao_seg
+        vel_y = self.delta_y / duracao_seg
+
+        ator.fisica.set_vel(vel_x, vel_y)
+
+    def atualizar(self, tempo_atual):
+        if self.concluido:
+            return
+        if tempo_atual - self.inicio >= self.duracao:
+            ator = self.gerenciador_atores.pegar_ator(self.nome_ator)
+            ator.fisica.set_vel(0.0, 0.0)
+            ator.set_posicao(self.destino_x, self.destino_y)  # Corrige qualquer imprecisão
+            self.concluido = True
+            if self.callback:
+                self.callback()
+
+
 class EventoMoverAtor(Evento):
-    def __init__(self, duracao_ms, gerenciador_atores, nome_ator, destino_x, destino_y, callback=None):
+    def __init__(self, duracao_ms, gerenciador_atores, nome_ator, destino_x= None, destino_y = None, callback=None):
         super().__init__(duracao_ms, callback)
         self.gerenciador_atores :Gerenciador_Atores= gerenciador_atores
         self.nome_ator = nome_ator
@@ -137,8 +178,15 @@ class EventoMoverAtor(Evento):
         # ator.fisica.set_vel()
         self.inicio_x, self.inicio_y = ator.fisica.posicao
 
+        if self.destino_x == None:
+            self.destino_x = self.inicio_x    
+
+        if self.destino_y == None: 
+            self.destino_y = self.inicio_y
+
         dx = self.destino_x - self.inicio_x
         dy = self.destino_y - self.inicio_y
+        
         duracao_seg = self.duracao / 1000.0  # ms → s
 
         vel_x = dx / duracao_seg
