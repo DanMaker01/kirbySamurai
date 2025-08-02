@@ -71,6 +71,7 @@ class GerenciadorEventos:
     # Controle
     def adicionar_input_lock(self,valor=False,callback=None):
         self._adicionar_evento( EventoInputLock(self.gerenciador_controle,valor,callback) )
+    # =====================================================================
     # Jogo
     def adicionar_espera(self, duracao_ms, callback=None):
         self._adicionar_evento(EventoEspera(duracao_ms, callback))
@@ -114,13 +115,8 @@ class GerenciadorEventos:
                     print("acabaram eventos")
                 evento.iniciar(tempo_atual)
                 self.eventos_ativos.append(evento)
-
-
-
-    def desenhar(self, tela):
-        '''
-        Atualmente não está fazendo nada. Retirar?????? Sim.
-        '''
+    
+    def desenhar(self, tela): # atualmente não está servindo pra nada 
         # if self.evento_atual:
         #     self.evento_atual.desenhar(tela)
         pass
