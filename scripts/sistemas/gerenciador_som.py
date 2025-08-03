@@ -4,6 +4,13 @@
 # Modular: Sim
 # Finalizada: Sim
 ##############################################################3
+# À fazer:
+# - 
+##############################################################3
+# Feito:
+# - Verificar se consigo tocar tocar vários sons em paralelo
+##############################################################3
+
 import pygame
 class Gerenciador_Som:
     def __init__(self):

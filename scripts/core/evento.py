@@ -35,7 +35,7 @@ from scripts.sistemas.gerenciador_controle import Gerenciador_Controle
 # Evento
 # ==============================================================================
 class Evento:
-    def __init__(self, duracao_ms, callback=None):
+    def __init__(self, duracao_ms=0, callback=None):
         if duracao_ms == 0:
             duracao_ms = 1 # para evitar divisões por 0, etc...
         self.duracao = duracao_ms

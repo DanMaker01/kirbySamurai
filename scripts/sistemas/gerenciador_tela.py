@@ -1,14 +1,33 @@
+# =======================================================
+# Gerenciador de Tela
+# =======================================================
+# Cuida dos efeitos na tela, como:
+# - Fade
+# - Coloração
+# - Tremor
+# - etc (o que seria aqui?)
+# =======================================================
+# Finalizado: Não
+# =======================================================
+# - A fazer:
+# - Efeito de coloração generalizada
+# - Efeito de tremor por tempo
+# - Efeitos de partículas
+# =======================================================
+
 import pygame
 from scripts.core.config import WIDTH, HEIGHT
 # from scripts.core.camera import Camera
 
 class GerenciadorTela:
     def __init__(self, iniciar_preto=False):
+        # propriedades
+        self.tipo_fade = None
         self.superficie_fade = pygame.Surface((WIDTH, HEIGHT)).convert_alpha()
         self.alfa_tela_atual = 255 if iniciar_preto else 0  # alfa fixo atual (aplicado sempre)
+        # fade
         self.fade_em_andamento = False
-
-        self.tipo_fade = None
+        # tempo
         self.inicio = None
         self.duracao = 0
         
@@ -38,8 +57,9 @@ class GerenciadorTela:
                 self.tipo_fade = None
 
 
-    def desenhar(self, tela):
-        if self.alfa_tela_atual > 0:
+    def desenhar(self, tela): 
+        #será desenhado por cima do jogo, porém antes da UI.
+        if self.alfa_tela_atual > 0: 
             self.superficie_fade.fill((0, 0, 0, self.alfa_tela_atual))
             tela.blit(self.superficie_fade, (0, 0))
 

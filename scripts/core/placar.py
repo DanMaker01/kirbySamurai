@@ -1,28 +1,34 @@
-#####################################################################
+#####################################
 # Placar
-#####################################################################
-# Modular: SIm
-# Final: Não
-#####################################################################
-# À fazer:
-# - incluir uma janela
-#####################################################################
+#####################################
+# A Fazer:
+# - Adicionar no dicionário o numero de players
+# -
+# -
+#####################################
+# A Fazer:
+# -
+# -
+#####################################
 import pygame
 
 class Placar:
-    def __init__(self,y=20):
-        # self.x = x
+    def __init__(self, y=20, players=1): 
+        self.pontuacao = {}
+        for i in range(players):
+            self.pontuacao[f'p{i+1}'] = 0
+
         self.y = y
-        
-        self.pontuacao = {
-            'p1': 0,
-            'p2': 0
-        }
         self.font = pygame.font.SysFont(None, 30)
         self._on_modified = None
         self._blink = False
         self._blink_duration = 3.0  # segundos
         self._blink_elapsed = 0.0   # tempo acumulado do blink
+
+
+    def adicionar_jogador(self, nome):
+        if nome not in self.pontuacao:
+            self.pontuacao[nome] = 0
 
     def set_on_modified(self, callback):
         self._on_modified = callback
@@ -33,18 +39,47 @@ class Placar:
         self._blink = True
         self._blink_elapsed = 0.0
 
-    def adicionar_pontos(self, time, pontos):
-        if time in self.pontuacao:
-            self.pontuacao[time] += pontos
-            self._notify_modified()
-
-    def zerar_placar(self):
-        for time in self.pontuacao:
-            self.pontuacao[time] = 0
+    def adicionar_pontos(self, jogador, pontos):
+        if jogador not in self.pontuacao:
+            self.pontuacao[jogador] = 0
+        self.pontuacao[jogador] += pontos
         self._notify_modified()
 
-    def mostrar_pontuacao(self, time):
-        return self.pontuacao.get(time)
+    def zerar_placar(self):
+        for jogador in self.pontuacao:
+            self.pontuacao[jogador] = 0
+        self._notify_modified()
+
+    def mostrar_pontuacao(self, jogador):
+        return self.pontuacao.get(jogador, 0)
+
+    def mostrar_quem_esta_vencendo(self):
+        if not self.pontuacao:
+            return None
+
+        maior_pontuacao = float('-inf')
+        vencedores = []
+
+        for jogador, pontos in self.pontuacao.items():
+            if pontos > maior_pontuacao:
+                maior_pontuacao = pontos
+                vencedores = [jogador]
+            elif pontos == maior_pontuacao:
+                vencedores.append(jogador)
+
+        if len(vencedores) == 1:
+            return vencedores[0]
+        else:
+            return 'empate'
+        
+    def diferenca_maior_que(self, valor):
+        if len(self.pontuacao) < 2:
+            return False  # diferença não é significativa com 0 ou 1 jogador
+
+        pontuacoes = list(self.pontuacao.values())
+        diferenca = max(pontuacoes) - min(pontuacoes)
+        return diferenca > valor
+
 
     def atualizar(self, dt):
         if self._blink:
@@ -53,14 +88,28 @@ class Placar:
                 self._blink = False
 
     def draw(self, screen):
-        score_text = f"{self.mostrar_pontuacao('p1')} x {self.mostrar_pontuacao('p2')}"
-        
-        if self._blink:
-            # Pisca a cada 200ms
-            blink_on = int(self._blink_elapsed * 5) % 2 == 0
-            color = (255, 0, 0) if blink_on else (255, 255, 255)
-        else:
-            color = (255, 255, 255)
+        # Exibir placar de cada jogador
+        linhas = []
+        for jogador in sorted(self.pontuacao.keys()):
+            pontos = self.pontuacao[jogador]
+            linhas.append(f"{jogador}: {pontos}")
 
-        text_surface = self.font.render(score_text, True, color)
-        screen.blit(text_surface, (screen.get_width() // 2 - text_surface.get_width() // 2, self.y))
+        # # Exibir quem está vencendo
+        # vencedor = self.mostrar_quem_esta_vencendo()
+        # if vencedor == 'empate':
+        #     linhas.append("EMPATE!")
+        # elif vencedor:
+        #     linhas.append(f"{vencedor.upper()} vencendo")
+
+        # Renderizar cada linha do placar
+        for i, texto in enumerate(linhas):
+            if self._blink:
+                blink_on = int(self._blink_elapsed * 5) % 2 == 0
+                color = (255, 0, 0) if blink_on else (255, 255, 255)
+            else:
+                color = (255, 255, 255)
+
+            surf = self.font.render(texto, True, color)
+            x = screen.get_width() // 2 - surf.get_width() // 2
+            y = self.y + i * 25
+            screen.blit(surf, (x, y))

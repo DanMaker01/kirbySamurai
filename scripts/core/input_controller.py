@@ -11,6 +11,7 @@
 # - Sistema de edição dinâmico
 # - Retornar a lista de botões apertados no momento
 # --> Isso vai liberar um sistema de empate
+# - Opcional, sistema de um botão duas funções, lidar com casos em que as duas função são válidas, ordem de prioridade?
 ###########################################
 
 
@@ -21,23 +22,18 @@ from scripts.core.config import *
 class InputController:
     def __init__(self):
         self.key_bindings = {
-            # pygame.K_1: ('player1', 'parado'),
-            # pygame.K_2: 'load_sequence_player1',
-            # pygame.K_3: ('player1', 'movimento'),
-            # pygame.K_4: ('player1', 'pos_movimento'),
-            # pygame.K_q: ('player2', 'parado'),
-            # pygame.K_w: ('player2', 'pre_movimento'),
-            # pygame.K_e: ('player2', 'movimento'),
-            # pygame.K_r: ('player2', 'pos_movimento'),
-            # pygame.K_p: 'toggle_pause',
-            pygame.K_LEFT: LEFT,
+            pygame.K_LEFT:  LEFT,
             pygame.K_RIGHT: RIGHT,
-            pygame.K_UP: UP,
-            pygame.K_DOWN: DOWN,
-            pygame.K_z: CONFIRM,
-            pygame.K_x: CANCEL,
-            pygame.K_z: P1_HIT,
-            pygame.K_p: P2_HIT
+            pygame.K_UP:    UP,
+            pygame.K_DOWN:  DOWN,
+
+            # pygame.K_z:     CONFIRM,
+            pygame.K_RETURN:CONFIRM,
+            
+            pygame.K_x:     CANCEL,
+            
+            pygame.K_z:     P1_HIT,
+            pygame.K_p:     P2_HIT,
         }
         self.pressed_keys = {}  # key -> timestamp
 
@@ -52,6 +48,9 @@ class InputController:
             key = event.key
             if key not in self.pressed_keys:
                 self.pressed_keys[key] = now
+            
+            # print(key, self.key_bindings.get(key))
+
             return {
                 'event': 'keydown',
                 'key': key,

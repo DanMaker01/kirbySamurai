@@ -9,8 +9,7 @@
 ###########################################
 # A Fazer:
 # - Gerenciar totalmente os eventos
-# - Retorna acoes para o Gerenciador
-# - Fazer todas as 
+# - Retorna acoes para o Gerenciador 
 # - Expandir para filas em paralelo (como paralel process do RPGMaker) 
 # - 
 ###########################################
@@ -26,7 +25,7 @@ class GerenciadorEventos:
     def __init__(self, gerenciador_controle, gerenciador_som,gerenciador_tela, gerenciador_atores, camera):
         self.fila_eventos = []                           # fila de eventos do roteiro
         self.tempo_pausado = False
-        # Referência de cada sub-sistema
+        # Referência de cada sub-sistema (todos mesmo???)
         self.gerenciador_tela = gerenciador_tela
         self.gerenciador_som = gerenciador_som
         self.gerenciador_atores = gerenciador_atores
@@ -49,13 +48,13 @@ class GerenciadorEventos:
     # FUNÇÕES DE ADICIONAR CADA TIPO DE EVENTO NA FILA 
     # =====================================================================
     # Tela
-    def adicionar_fade_in(self, duracao_ms, callback=None):
+    def adicionar_fade_in(self, duracao_ms=0, callback=None):
         self._adicionar_evento(EventoFade("in", duracao_ms, self.gerenciador_tela, callback))
-    def adicionar_fade_out(self, duracao_ms, callback=None):
+    def adicionar_fade_out(self, duracao_ms=0, callback=None):
         self._adicionar_evento(EventoFade("out", duracao_ms, self.gerenciador_tela, callback))
     # =====================================================================
     # Camera
-    def adicionar_camera_move(self, duracao_ms, x,y, callback=None ):
+    def adicionar_camera_move(self, duracao_ms=0, x=0,y=0, callback=None ):
         self._adicionar_evento(EventoMoverCamera(duracao_ms, self.camera, x,y, callback))
     # =====================================================================
     # Atores   
@@ -73,7 +72,7 @@ class GerenciadorEventos:
         self._adicionar_evento( EventoInputLock(self.gerenciador_controle,valor,callback) )
     # =====================================================================
     # Jogo
-    def adicionar_espera(self, duracao_ms, callback=None):
+    def adicionar_espera(self, duracao_ms=0, callback=None):
         self._adicionar_evento(EventoEspera(duracao_ms, callback))
     def adicionar_limpa_eventos(self,callback=None):
         self._adicionar_evento( EventoLimpaEventos(self, callback))

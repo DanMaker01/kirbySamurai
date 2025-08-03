@@ -1,5 +1,3 @@
-
-
 import pygame
 
 ###########################################
@@ -12,15 +10,21 @@ import pygame
 # - Modificações dos parametros por métodos??
 # - Get e set Rect
 ###########################################
+# Feito:
+# -
+# -
+# -
+# -
+###########################################
 
 
 class Janela:
     def __init__(
-        self, 
-        x=0, y=0, 
-        lar=100, alt=100, 
-        cor=(255, 255, 255, 255), 
-        margem_sup=10, margem_inf=10, 
+        self,
+        x=0, y=0,
+        lar=100, alt=100,
+        cor=(255, 255, 255, 255),
+        margem_sup=10, margem_inf=10,
         margem_esq=10, margem_dir=10
     ):
         self.pos = pygame.Vector2(x, y)
@@ -35,42 +39,53 @@ class Janela:
             "dir": margem_dir
         }
 
-        
+    # Acesso direto às margens (propriedades)
+    @property
+    def margem_sup(self): return self.margens["sup"]
+
+    @property
+    def margem_inf(self): return self.margens["inf"]
+
+    @property
+    def margem_esq(self): return self.margens["esq"]
+
+    @property
+    def margem_dir(self): return self.margens["dir"]
+
     def get_rect(self):
         return pygame.Rect(self.pos.x, self.pos.y, self.lar, self.alt)
 
     def mover_para(self, x, y):
         self.pos.update(x, y)
-        self.rect.topleft = (x, y)
 
     def mudar_tamanho(self, lar, alt):
         self.lar = lar
         self.alt = alt
-        self.rect.size = (lar, alt)
 
     def desenhar(self, surface):
         pygame.draw.rect(surface, self.cor, self.get_rect())
 
     def obter_area_interna(self):
-        """
-        Retorna um pygame.Rect representando a área útil (sem margens) da janela.
-        """
+        """Retorna um pygame.Rect representando a área útil (sem margens) da janela."""
         return pygame.Rect(
-            self.pos.x + self.margens["esq"],
-            self.pos.y + self.margens["sup"],
-            self.lar - (self.margens["esq"] + self.margens["dir"]),
-            self.alt - (self.margens["sup"] + self.margens["inf"])
+            self.pos.x + self.margem_esq,
+            self.pos.y + self.margem_sup,
+            self.lar - (self.margem_esq + self.margem_dir),
+            self.alt - (self.margem_sup + self.margem_inf)
         )
 
 
+######################################
+# Janela Selecionável
+######################################
 class JanelaSelecionavel(Janela):
     def __init__(
         self,
         opcoes,
         x=0, y=0,
         lar=200, alt=200,
-        cor=(240, 240, 240),
-        cor_selecao=(180, 180, 255),
+        cor=(80, 80, 80),
+        cor_selecao=(180+20, 180+20, 255),
         fonte=None,
         margem_sup=10, margem_inf=10,
         margem_esq=10, margem_dir=10,
@@ -82,9 +97,30 @@ class JanelaSelecionavel(Janela):
         self.cor_selecao = cor_selecao
         self.fonte = fonte or pygame.font.SysFont(None, 28)
         self.espaco_entre = espaco_entre
+        self.ajustar_tamanho_para_conter_texto()
+
+    def ajustar_tamanho_para_conter_texto(self):
+        """Ajusta lar e alt da janela com base no texto e margens."""
+        larguras = []
+        alturas = []
+
+        for texto in self.opcoes:
+            render = self.fonte.render(texto, True, (0, 0, 0))
+            larguras.append(render.get_width())
+            alturas.append(render.get_height())
+
+        if larguras and alturas:
+            largura_max = max(larguras)
+            altura_total = sum(alturas) + self.espaco_entre * (len(self.opcoes) - 1)
+        else:
+            largura_max = 0
+            altura_total = 0
+
+        self.lar = largura_max + self.margem_esq + self.margem_dir
+        self.alt = altura_total + self.margem_sup + self.margem_inf
 
     def desenhar(self, surface):
-        super().desenhar(surface)  # Desenha o fundo da janela
+        super().desenhar(surface)
         area = self.obter_area_interna()
 
         y = area.top
