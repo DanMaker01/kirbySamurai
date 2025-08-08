@@ -6,7 +6,8 @@
 # Finalizada: Não
 # #################################################################
 # A Fazer:
-# - 
+# - Testar bastante
+# - Testar relações com variáveis
 # - Verificar se descobrir_pg_sera_ativa está bom
 # - 
 ##################################################################
@@ -14,8 +15,10 @@ import operator
 import re
 from scripts.core.pagina import Pagina
 class Roteiro:
-    def __init__(self):
-        self.lista_paginas = [] #vir com padrão
+    def __init__(self, lista_de_paginas=[]):
+        self.lista_paginas = lista_de_paginas #vir com padrão
+        if len(lista_de_paginas) == 0:
+            self.adicionar_pagina(lista_eventos=[])
 
     def adicionar_pagina(self, condicao=None, lista_eventos=None):
         self.lista_paginas.append(Pagina(condicao, lista_eventos))
@@ -45,6 +48,9 @@ class Roteiro:
         """
         Avalia uma expressão do tipo 'var>=10' usando operadores seguros.
         """
+        if condicao == None:
+            condicao = 'padrao'
+            
         if condicao == 'padrao':
             return True
 
@@ -57,7 +63,7 @@ class Roteiro:
             '>': operator.gt,
             '<': operator.lt,
         }
-
+        print("condicao:", condicao)
         # Regex para dividir: var operador valor
         match = re.match(r'^\s*(\w+)\s*(==|!=|>=|<=|=|<|>)\s*(-?\w+)\s*$', condicao)
         if not match:

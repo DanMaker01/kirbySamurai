@@ -7,7 +7,7 @@
 # - Provavelmente vai ser integrado ao Gerenciador_Cena ??? implementar
 #######################################################################
 
-from scripts.atores.ator import Ator
+from scripts.core.ator import Ator
 from typing import Dict
 
 class Gerenciador_Atores:
@@ -35,6 +35,7 @@ class Gerenciador_Atores:
 
         for ator in self.atores.values():
             # correção para offset
+            # print("ATOR:",ator)
             ator.draw(screen, offset) 
         pass
 

@@ -29,7 +29,7 @@ from scripts.core.camera import Camera
 from scripts.sistemas.gerenciador_tela import GerenciadorTela
 from scripts.sistemas.gerenciador_som import Gerenciador_Som 
 from scripts.sistemas.gerenciador_atores import Gerenciador_Atores
-from scripts.atores.ator import Ator
+from scripts.core.ator import Ator
 from scripts.sistemas.gerenciador_controle import Gerenciador_Controle
 # ==============================================================================
 # Evento
@@ -64,12 +64,22 @@ class Evento:
 # ==============================================================================
 # Tipos de Eventos
 # ==============================================================================
+class EventoMusica(Evento):
+    def __init__(self, gerenciador_som, nome_musica, volume=1.0, loop=True, callback=None):
+        super().__init__(0, callback)
+        self.gerenciador_som :Gerenciador_Som = gerenciador_som
+        self.nome_musica = nome_musica
+        self.volume = volume
+        self.loop = loop
+    def iniciar(self, tempo_atual):
+        self.gerenciador_som.tocar_musica(self.nome_musica, self.loop)
 class EventoSom(Evento):
     def __init__(self, gerenciador_som,nome_som,volume=1.0, callback=None):
         super().__init__(0, callback)
         self.gerenciador_som:Gerenciador_Som = gerenciador_som
         self.nome_som = nome_som
         self.volume = volume
+        
     def iniciar(self, tempo_atual):
         self.gerenciador_som.tocar_som(self.nome_som, volume=self.volume)
         # print(f"tocando:{self.nome_som}, vol={self.volume}")

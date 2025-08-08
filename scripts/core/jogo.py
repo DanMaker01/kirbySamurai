@@ -35,18 +35,18 @@ class Jogo:
         pygame.display.set_icon(pygame.Surface((1, 1)))
 
     def _criar_componentes(self):
-        self.clock = pygame.time.Clock()
+        self.clock = pygame.time.Clock() #pra que serve? #???
         self.input_controller = InputController()
-        self.gerenciador = Gerenciador(self.screen, self.clock)
+        self.gerenciador = Gerenciador(self.screen)
 
     def rodar(self):
         self.running = True
         print("iniciando jogo...")
         while self.running:
             self.handle_events()
+            #loop principal
             self.gerenciador.update( self.clock.get_time() / 1000.0 )
             self.gerenciador.draw()
-            # self.ui.draw()
             pygame.display.flip()
 
             self.clock.tick(60)

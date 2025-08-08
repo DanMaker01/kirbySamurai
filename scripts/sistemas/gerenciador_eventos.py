@@ -76,13 +76,20 @@ class GerenciadorEventos:
         self._adicionar_evento(EventoEspera(duracao_ms, callback))
     def adicionar_limpa_eventos(self,callback=None):
         self._adicionar_evento( EventoLimpaEventos(self, callback))
+    # =====================================================================
+    # Som
     def adicionar_som(self, nome_som,volume=1.0, callback=None):
         self._adicionar_evento( EventoSom(self.gerenciador_som, nome_som,volume,callback))
+    def adicionar_musica(self, nome_musica,volume=1.0,loop=True, callback=None):
+        self._adicionar_evento( EventoMusica(self.gerenciador_som, nome_musica,volume,callback))
     # =====================================================================
 
     def atualizar(self, tempo_atual):
+        # if len(self.fila_eventos)==0:
+            # print('0 eventos na fila do GerenciadorEventos')
         # Atualiza todos os eventos ativos (inclusive esperas)
         for evento in self.eventos_ativos[:]:
+            # print(evento)
             evento.atualizar(tempo_atual)
             if evento.concluido:
                 # print(evento.__class__, "finalizado em ",tempo_atual)

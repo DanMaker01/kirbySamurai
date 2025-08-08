@@ -21,20 +21,9 @@ from scripts.core.config import *
 
 class InputController:
     def __init__(self):
-        self.key_bindings = {
-            pygame.K_LEFT:  LEFT,
-            pygame.K_RIGHT: RIGHT,
-            pygame.K_UP:    UP,
-            pygame.K_DOWN:  DOWN,
+        self.key_bindings = KEY_BINDINGS
 
-            # pygame.K_z:     CONFIRM,
-            pygame.K_RETURN:CONFIRM,
-            
-            pygame.K_x:     CANCEL,
-            
-            pygame.K_z:     P1_HIT,
-            pygame.K_p:     P2_HIT,
-        }
+        
         self.pressed_keys = {}  # key -> timestamp
 
     def process_event(self, event):

@@ -12,6 +12,7 @@
 ##############################################################3
 
 import pygame
+#import biblioteca que tem o set_volume, play, etc
 class Gerenciador_Som:
     def __init__(self):
         pygame.mixer.init()
@@ -21,10 +22,10 @@ class Gerenciador_Som:
         self.volume_musica = 1.0
         self.musica_atual = None
     # ========== CARREGAR AUDIO =====================
-    def carregar_som(self, nome, caminho):
+    def carregar_som(self, nome, caminho, volume=1.0):
         if nome not in self.sons:
             self.sons[nome] = pygame.mixer.Sound(caminho)
-            self.sons[nome].set_volume(self.volume_efeitos)
+            self.sons[nome].set_volume(volume)
     def carregar_musica(self, nome, caminho):
         if nome not in self.musicas:
             self.musicas[nome] = caminho
