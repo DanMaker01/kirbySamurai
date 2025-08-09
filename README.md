@@ -3,7 +3,7 @@
 ## Jogo de Reação estilo Kirby Samurai
 
 Windows: 
-- Baixe tudo. (codigo_fonte.zip é opcional)
+- Baixe e coloque numa mesma pasta: *audio*, *sprites* e *main.exe*. (codigo_fonte.zip é opcional)
 - Rode: *main.exe*
 
 ## Controles
