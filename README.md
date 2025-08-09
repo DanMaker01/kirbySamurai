@@ -3,7 +3,7 @@
 ## Jogo de Reação estilo Kirby Samurai
 
 Windows: 
-- Extraia: *kirbySamurai-beta3.zip*
+- Baixe tudo. (codigo_fonte.zip é opcional)
 - Rode: *main.exe*
 
 ## Controles
